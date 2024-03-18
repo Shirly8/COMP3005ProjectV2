@@ -13,9 +13,14 @@ https://youtu.be/z7amN_icAiM
 - README.md
 
 # Installation
-1. Clone resporitory: `git clone https://github.com/Shirly8/COMP3005_a3.git`
-2. cd 3005Assignment3
-3. npm install
+1. Clone repository: 
+   ```bash
+   git clone https://github.com/Shirly8/COMP3005_a3.git
+   
+2. Navigate to the repository
+3. ```bash
+   npm install
+
 
 
 # Setup DataBase
@@ -25,7 +30,8 @@ https://youtu.be/z7amN_icAiM
 
 # Running
 - You may need to replace username or password if needed
-1. node 3005A3.js
+1. ```bash
+   node 3005A3.js
 2. You will see a menu prompt where you can type 1-5 depending on your request
 
 1 -  Views all students in the database
