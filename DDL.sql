@@ -1,19 +1,11 @@
 CREATE TABLE members (
-    member_id SERIAL PRIMARY KEY,
+    member_id SERIAL PRIMARY KEY, -- this is our membership id 
     email VARCHAR(255)  NOT NULL UNIQUE,
     password TEXT NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     health_metrics TEXT,
     fitness_goals TEXT
-);
-
-CREATE TABLE memberships(
-    member_id SERIAL PRIMARY KEY, -- we assume that membership_id is the same as the members_id
-    amount INT,
-    paid BOOLEAN,
-    join_date DATE DEFAULT CURRENT_DATE,
-    FOREIGN KEY(member_id) REFERENCES members
 );
 
 CREATE TABLE dashboard(
@@ -40,7 +32,6 @@ CREATE TABLE billing (
     due_date DATE,
     paid BOOLEAN,
     FOREIGN KEY(member_id) REFERENCES members,
-    FOREIGN KEY(amount) REFERENCES memberships
 );
 
 CREATE TABLE equipment(
