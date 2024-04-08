@@ -3,21 +3,30 @@ const {question} = require('./functions.js');
 
 
 async function createAccount(email, password, firstName, lastName) {
-    const command = 'INSERT INTO members (email, password, first_name, last_name) VALUES ($1, $2, $3, $4)';
+  try{
+    const command = 'INSERT INTO members (email, password, first_name, last_name) VALUES ($1, $2, $3, $4) RETURNING member_id';
     const values = [email, password, firstName, lastName];
     const userinfo = await performQuery(command, values);
-    // const id = userinfo.rows[0].id; //GET ID OF THE MEMBER
+    const id = userinfo.rows[0].member_id; //GET ID FROM THE MEMBER TABLE
 
-    //FOR MEMBERSHIP TABLE: 
-    // const membershipQuery = 'INSERT INTO memberships (member_id, amount, paid, DueDate) VALUES ($1, $2, $3, $4)'
-    // const due = new Date();
-    // due.setMonth(due.getMonth()+1)
-    // const membershipVal = [id, 60, false, due];
-    // await performQuery(membershipQuery, membershipVal);
+    //PRORATED AMOUNT DURING THE FIRST MONTH
+    const joinDate = new Date();
+    const currentDays = new Date(joinDate.getFullYear(), joinDate.getMonth() + 1, 0).getDate();
+    const dueAmount = (60/currentDays) * (currentDays-joinDate.getDate());
+    const dueDate = new Date(joinDate.getFullYear(), joinDate.getMonth() + 1, 1);
+    
+    //CREATE A BILLING RECORD: 
+    const billingQuery = 'INSERT INTO billing (member_id, amount, due_date, paid) VALUES ($1, $2, $3, $4)';
+    const billingVal = [id, dueAmount, dueDate, false];
+    await performQuery(billingQuery, billingVal);
+  
 
-    console.log("\n\nMember Added! \n");
+    console.log("\n\nMember Added! Your membership is $60/month starting next month. \nThis month you pay the prorated amount of: $" + dueAmount.toFixed(2) + ".\n")
 
     displayMemberMenu();
+  }catch(error){
+    console.error("An error occurred:", error);
+  }
 }
 
 
@@ -31,6 +40,8 @@ async function login() {
   
     if (res && res.rows.length > 0) {
       console.log("\n\nSuccessful Login!\nWELCOME " + res.rows[0].first_name + "\n");
+      
+      //CONSIDER CHECKING MEMBERSHIP STATUS BEFORE DISPLAYING
       displayMemberMenu();
     } else {
       console.log("Login unsuccessful! Please try again.");
@@ -48,7 +59,6 @@ async function displayMemberMenu() {
   console.log("0 - Exit");
   
   let choice = await question("Enter your choice: ", answer => ['1', '2', '3', '4'].includes(answer));
-
 }
 
 

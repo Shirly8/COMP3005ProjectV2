@@ -23,7 +23,7 @@ async function performQuery(command, values) {
     result = await dbConnect.query(command, values);
 
   } catch (error) {
-    console.error(`\nError: ${error.message}. \nTry again`);
+    console.error(`\nError: ${error.message}. \n Try again`);
       return executeQuery(command, values, retryCount - 1);
     } finally {
     await dbConnect.end();
@@ -32,7 +32,7 @@ async function performQuery(command, values) {
 }
 
 
-module.exports = { performQuery };
+module.exports = { getConnection, performQuery };
 
 
 

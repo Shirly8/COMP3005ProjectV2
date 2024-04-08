@@ -6,8 +6,8 @@ const trainer = require('./trainer.js');
 const {question} = require('./functions.js');
 
 
-
 async function startMenu() {
+
   let role = await question('\nMAIN MENU: \n============ \nA - Admin \nM - Member \nT - Trainer \n0 - Exit \nGet started by entering a letter : ', answer => ['A', 'M', 'T'].includes(answer.toUpperCase()));
   let choice = await question('\n \n1. Create Account \n2. Login \n0. Exit \nEnter a number: ', answer => ['1', '2', '0'].includes(answer));
 
