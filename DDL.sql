@@ -12,7 +12,7 @@ CREATE TABLE memberships(
     member_id SERIAL PRIMARY KEY, -- we assume that membership_id is the same as the members_id
     amount INT,
     paid BOOLEAN,
-    join_date DATE DEFAULT CURRENT_DATE,
+    due_date DATE,
     FOREIGN KEY(member_id) REFERENCES members
 );
 
