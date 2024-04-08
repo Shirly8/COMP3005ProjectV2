@@ -8,6 +8,14 @@ CREATE TABLE members (
     fitness_goals TEXT
 );
 
+CREATE TABLE memberships(
+    member_id SERIAL PRIMARY KEY, -- we assume that membership_id is the same as the members_id
+    amount INT,
+    paid BOOLEAN,
+    due_date DATE,
+    FOREIGN KEY(member_id) REFERENCES members
+);
+
 CREATE TABLE dashboard(
 -- what is the difference from health metrics, fitness goals and health statistic/fitness achivements
 -- is it referencing to the members table?
