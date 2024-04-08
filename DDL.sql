@@ -1,3 +1,15 @@
+DROP TABLE IF EXISTS groupsessions CASCADE;
+DROP TABLE IF EXISTS trainers CASCADE;
+DROP TABLE IF EXISTS members CASCADE;
+DROP TABLE IF EXISTS personalsessions;
+DROP TABLE IF EXISTS room;
+DROP TABLE IF EXISTS equipment;
+DROP TABLE IF EXISTS billing;
+DROP TABLE IF EXISTS administrativestaff;
+DROP TABLE IF EXISTS sessionmembers;
+DROP TABLE IF EXISTS dashboard; 
+
+
 CREATE TABLE members (
     member_id SERIAL PRIMARY KEY, -- this is our membership id 
     email VARCHAR(255)  NOT NULL UNIQUE,
@@ -27,11 +39,11 @@ CREATE TABLE administrativestaff (
 );
 
 CREATE TABLE billing (
-    member_id SERIAL PRIMARY KEY,
+    member_id INT PRIMARY KEY,
     amount INT,
     due_date DATE,
     paid BOOLEAN,
-    FOREIGN KEY(member_id) REFERENCES members,
+    FOREIGN KEY(member_id) REFERENCES members
 );
 
 CREATE TABLE equipment(
@@ -82,6 +94,7 @@ CREATE TABLE groupsessions(
 ALTER TABLE groupsessions -- makes sure that the groupsessions room_id matches to a room room_id? do we want this? adding a constraint?
 ADD CONSTRAINT fk_room_id
 FOREIGN KEY (room_id) REFERENCES room(room_id);
+
 CREATE TABLE sessionmembers(
     session_id INT,
     member_id INT,
