@@ -21,7 +21,7 @@ async function login() {
   const res = await performQuery(command, values);
 
   if (res && res.rows.length > 0) {
-    console.log("\n\nSuccessful Login!\nWELCOME " + res.rows[0].first_name + "\n");
+    console.log("\n\nSuccessful Login!\nWELCOME " + res.rows[0].first_name +  + " " + res.rows[0].last_name + "\n");
     displayTrainerMenu();
   } else {
     console.log("Login unsuccessful! Please try again.");

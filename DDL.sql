@@ -1,3 +1,12 @@
+DROP TABLE IF EXISTS trainers;
+DROP TABLE IF EXISTS room;
+DROP TABLE IF EXISTS equipment;
+DROP TABLE IF EXISTS billing;
+DROP TABLE IF EXISTS administrativestaff;
+DROP TABLE IF EXISTS memberships;
+DROP TABLE IF EXISTS members;
+
+
 CREATE TABLE members (
     member_id SERIAL PRIMARY KEY, -- this is our membership id 
     email VARCHAR(255)  NOT NULL UNIQUE,
