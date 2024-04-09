@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS personalsessions;
 DROP TABLE IF EXISTS room;
 DROP TABLE IF EXISTS equipment;
 DROP TABLE IF EXISTS billing;
-DROP TABLE IF EXISTS administrativestaff;
+DROP TABLE IF EXISTS staff;
 DROP TABLE IF EXISTS sessionmembers;
 DROP TABLE IF EXISTS dashboard; 
 
@@ -19,8 +19,6 @@ CREATE TABLE members (
 );
 
 CREATE TABLE dashboard(
--- what is the difference from health metrics, fitness goals and health statistic/fitness achivements
--- is it referencing to the members table?
     member_id int PRIMARY KEY,
     exercise_routines TEXT,
     fitness_goals TEXT,
@@ -28,7 +26,7 @@ CREATE TABLE dashboard(
     FOREIGN KEY(member_id) REFERENCES members
 );
 
-CREATE TABLE administrativestaff (
+CREATE TABLE staff (
     staff_id SERIAL PRIMARY KEY,
     email VARCHAR(255)  NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
