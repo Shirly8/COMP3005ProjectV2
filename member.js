@@ -1,6 +1,6 @@
 const {performQuery} = require('./db.js');
 const {question} = require('./functions.js');
-
+var savedID = 0; 
 
 async function createAccount(email, password, firstName, lastName) {
   try{
@@ -39,9 +39,16 @@ async function login() {
     const res = await performQuery(command, values);
   
     if (res && res.rows.length > 0) {
-      console.log("\n\nSuccessful Login!\nWELCOME " + res.rows[0].first_name + "\n");
-      
-      //CONSIDER CHECKING MEMBERSHIP STATUS BEFORE DISPLAYING
+      // Check membership status
+       const paymentCommand = 'SELECT * FROM billing WHERE member_id = $1 AND paid = false AND due_date < CURRENT_DATE';
+      const paymentValues = [res.rows[0].member_id];
+      const paymentRes = await performQuery(paymentCommand, paymentValues);
+      if (paymentRes && paymentRes.rows.length > 0) {
+        console.log("\n\nSuccessful Login!\nWELCOME " + res.rows[0].first_name + " " + res.rows[0].last_name + "\nYour membership status is: [INACTIVE]. \n Please make payment and try again\n");
+        return;
+      }
+      console.log("\n\nSuccessful Login!\nWELCOME " + res.rows[0].first_name + " " + res.rows[0].last_name + "\nYour membership status is: [ACTIVE]");
+      savedID = res.rows[0].member_id;
       displayMemberMenu();
     } else {
       console.log("Login unsuccessful! Please try again.");
@@ -51,15 +58,65 @@ async function login() {
   
 
 async function displayMemberMenu() {
-  console.log("MEMBER MENU: \n");
-  console.log("1 - User Registration");
-  console.log("2 - Profile Management");
-  console.log("3 - DashBoard Display");
-  console.log("4 - Schedule Management");
+  console.log("\nMEMBER MENU:");
+  console.log("1 - Profile Management");
+  console.log("2 - DashBoard Display");
+  console.log("3 - Schedule Management");
   console.log("0 - Exit");
   
-  let choice = await question("Enter your choice: ", answer => ['1', '2', '3', '4'].includes(answer));
+  let choice = await question("Enter your choice: ", answer => ['1', '2', '3',].includes(answer));
+  if (choice == 1) {
+    manageAccount(); 
+  } else if (choice == 2) {
+    displayDashboard(); 
+  } else if (choice == 3){
+    //schedule management
+  }
 }
 
+async function displayDashboard() {
+  const command = 'SELECT * FROM dashboard WHERE member_id = $1;';
+  const value = [savedID]
+  const data = await performQuery(command, value);
 
-module.exports = { createAccount, login};
+  console.log("\nVIEWING DASHBOARD\n=======================")
+  data.rows.forEach((item) => {
+    console.log(`Exercise Routines: ${item.exercise_routines}`);
+    console.log(`Fitness Goals: ${item.fitness_goals}`);
+    console.log(`Health Metrics: ${item.health_metrics}`);
+  });;
+  displayMemberMenu();
+}
+
+async function manageAccount() {
+  let choice = await question("PROFILE MENU: \n1 - Update First Name\n2 - Update Last Name\n3 - Change Email \n4 - Change Password \n5 - Return to Menu \nEnter your choice: ");
+  if (choice == 1) {
+    let newFname = await question('Enter new first name: ');
+    const command = 'UPDATE members SET first_name = $1 WHERE member_id = $2';
+    const values = [newFname, savedID];
+    await performQuery(command, values);
+    console.log('First Name was successfully updated');
+  } else if (choice == 2) {
+    let newLname = await question('Enter new last name: ');
+    const command = 'UPDATE members SET last_name = $1 WHERE member_id = $2';
+    const values = [newLname, savedID];
+    await performQuery(command, values);
+    console.log('Last Name was successfully updated');
+  } else if (choice == 3) {
+    let newEmail = await question('Enter new email: ');
+    const command = 'UPDATE members SET email = $1 WHERE member_id = $2';
+    const values = [newEmail, savedID];
+    await performQuery(command, values);
+    console.log('Email was successfully updated');
+  } else if (choice == 4) {
+    let newFname = await question('Enter new password: ');
+    const command = 'UPDATE members SET password = $1 WHERE member_id = $2';
+    const values = [newFname, savedID];
+    await performQuery(command, values);
+    console.log('Password was successfully updated');
+  } 
+  console.log('Returning to Main Menu');
+  displayMemberMenu();
+}
+
+module.exports = { displayMemberMenu, createAccount, login};
