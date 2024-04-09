@@ -3,10 +3,10 @@ const {question} = require('./functions.js');
 
 
 async function createAccount(email, password, firstName, lastName) {
-    const command = 'INSERT INTO administrativestaff (email, password, first_name, last_name) VALUES ($1, $2, $3, $4)';
+    const command = 'INSERT INTO staff (email, password, first_name, last_name) VALUES ($1, $2, $3, $4)';
     const values = [email, password, firstName, lastName];
     await performQuery(command, values);
-
+    
     console.log("\n\nAdmin Added! \n");
     displayAdminMenu();
 }
@@ -16,7 +16,7 @@ async function login() {
   let email = await question("Enter email: ");
   let password = await question("Enter password: ");
 
-  const command = 'SELECT * FROM administrativestaff WHERE email = $1 AND password = $2';
+  const command = 'SELECT * FROM staff WHERE email = $1 AND password = $2';
   const values = [email, password];
   const res = await performQuery(command, values);
 
@@ -30,7 +30,7 @@ async function login() {
 }
 
 async function displayAdminMenu() {
-  console.log("\nADMINISTRATION MENU: \n");
+  console.log("\STAFF MENU: \n");
   console.log("1 - Room Booking Management");
   console.log("2 - Equipment Maintenance Monitoring");
   console.log("3 - Class Schedule Update");
@@ -75,8 +75,15 @@ async function processPayment() {
   
     if (res.rowCount === 0) {
       console.log(`Invalid MemberId. Please try again`);
+      processPayment();
   } else {
       console.log(`Processed payment for member ${id}!`);
+
+      const dueDate = new Date();
+      dueDate.setMonth(dueDate.getMonth()+2, 1);
+      const billingQuery = 'INSERT INTO billing (member_id, amount, due_date) VALUES ($1, $2, $3)';
+      const billingVal = [id, 60, dueDate];
+      await performQuery(billingQuery, billingVal);
   }
   }
 }
