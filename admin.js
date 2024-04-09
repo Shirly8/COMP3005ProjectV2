@@ -5,10 +5,11 @@ const {question} = require('./functions.js');
 async function createAccount(email, password, firstName, lastName) {
     const command = 'INSERT INTO administrativestaff (email, password, first_name, last_name) VALUES ($1, $2, $3, $4)';
     const values = [email, password, firstName, lastName];
-    await performQuery(command, values);
+    const success = await performQuery(command, values);
 
     console.log("\n\nAdmin Added! \n");
     displayAdminMenu();
+    return success;
 }
 
 
@@ -57,7 +58,7 @@ async function seePayment() {
 }
 }
 
-//IN PROCESS PAYMENT, IF DUE DATE IS DUE, REUPDATE MEMBER'S DUE DATE
+//IN PROCESS PAYMENT: IF DUE DATE IS DUE, REUPDATE MEMBER'S DUE DATE
 async function processPayment() { 
 
   while(true){
@@ -75,8 +76,15 @@ async function processPayment() {
   
     if (res.rowCount === 0) {
       console.log(`Invalid MemberId. Please try again`);
+      processPayment();
   } else {
       console.log(`Processed payment for member ${id}!`);
+
+      const dueDate = new Date();
+      dueDate.setMonth(dueDate.getMonth()+2, 1);
+      const billingQuery = 'INSERT INTO billing (member_id, amount, due_date) VALUES ($1, $2, $3)';
+      const billingVal = [id, 60, dueDate];
+      await performQuery(billingQuery, billingVal);
   }
   }
 }

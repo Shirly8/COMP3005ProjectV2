@@ -17,18 +17,19 @@ function getConnection() {
 async function performQuery(command, values) {
   const dbConnect = getConnection();
   await dbConnect.connect();
-  let result;
+  let performed = false;
 
   try {
-    result = await dbConnect.query(command, values);
+    await dbConnect.query(command, values);
+    success = true;
 
   } catch (error) {
-    console.error(`\nError: ${error.message}. \n Try again`);
-      return executeQuery(command, values, retryCount - 1);
+    console.error(`\nError: ${error.message}. Please Try again`);    
+
     } finally {
     await dbConnect.end();
   }
-  return result;
+  return performed;
 }
 
 

@@ -36,6 +36,8 @@ async function displayTrainerMenu() {
   console.log("0 - Exit");
 
   let choice = await question("Enter your choice or 0 to Exit: ", answer => ['1', '2'].includes(answer));
+  if (choice === 3) {
+  }
 }
 
 

@@ -22,12 +22,14 @@ async function startMenu() {
 }
 
 async function createAccount(role) {
-  let input = await question("\nACCOUNT CREATION: \nEnter your email, password, first name, and last name, separated by comma and a space: \n");
+  let success = false;
+  while (!success) {
   let userInfo = input.split(", ");
   let email = userInfo[0].trim();
   let password = userInfo[1].trim();
   let firstName = userInfo[2].trim();
   let lastName = userInfo[3].trim();
+  
 
   if (role === "A") {
     admin.createAccount(email, password, firstName, lastName);
@@ -37,6 +39,7 @@ async function createAccount(role) {
     let schedules = await question("Enter your schedule availability formatted like this: 'Mon 9-11' \n");
     trainer.createAccount(email, password, firstName, lastName, schedules);
   }
+}
 }
 
 async function login(role) {
@@ -49,4 +52,10 @@ async function login(role) {
   }
 }
 
+function callStart() {
+  startMenu();
+}
+
 startMenu();
+
+module.exports = {callStart};
