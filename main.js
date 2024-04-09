@@ -44,7 +44,7 @@ async function createAccount(role) {
       let routine = await question("Enter your exercise routines: ");
       let goals = await question("Enter your fitness goals:  ");
       let metrics = await question("Enter your health metrics: ");
-      console.log('aa');
+      console.log('');
       member.createAccount(email, password, firstName, lastName, routine, goals, metrics);
   } else if (role === "T") {
       let schedules = await question("Enter your schedule availability formatted like this: 'Mon 9-11' \n");
