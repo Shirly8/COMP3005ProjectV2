@@ -41,14 +41,17 @@ async function createAccount(role) {
   if (role === "A") {
     admin.createAccount(email, password, firstName, lastName);
   } else if (role === "M") {
-      member.createAccount(email, password, firstName, lastName);
+      let routine = await question("Enter your exercise routines: ");
+      let goals = await question("Enter your fitness goals:  ");
+      let metrics = await question("Enter your health metrics: ");
+      console.log('aa');
+      member.createAccount(email, password, firstName, lastName, routine, goals, metrics);
   } else if (role === "T") {
       let schedules = await question("Enter your schedule availability formatted like this: 'Mon 9-11' \n");
       console.log(''); // need this to make the promise stop pending 
       trainer.createAccount(email, password, firstName, lastName, schedules);
   }
 }
-
 
 function login(role) {
   if (role === "A") {
