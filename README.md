@@ -9,7 +9,7 @@
 # Installation
 
 # Setup DataBase
-npm install__
+npm install <br>
 node main.js
 
 # Running
