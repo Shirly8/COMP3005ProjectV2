@@ -13,3 +13,7 @@ INSERT INTO dashboard (member_id, exercise_routines, fitness_goals, health_metri
 INSERT INTO billing (member_id, amount, due_date, paid) VALUES (1, 60, '2024-04-15', false);
 INSERT INTO billing (member_id, amount, due_date, paid) VALUES (2, 60, '2024-04-20', false);
 INSERT INTO billing (member_id, amount, due_date, paid) VALUES (3, 60, '2024-04-25', true);
+INSERT INTO equipments (equipment_name, status) VALUES ('Treadmill', false);
+INSERT INTO equipments (equipment_name, status) VALUES ('Lat Machine', false);
+INSERT INTO equipments (equipment_name, status) VALUES ('Rowing Machine', true);
+
