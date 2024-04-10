@@ -42,8 +42,20 @@ function scheduleValidation(day, time) {
   }
 }
 
+function getNextHour(time) {
+  let [hour, minute] = time.split(':').map(Number);
+  hour = (hour + 1) % 24; 
+  return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`; 
+}
 
 
 
+function countHour(startHour,endHour) {
+  let [hour, minute] = startHour.split(':');
+  let [hour2, minute2] = endHour.split(':');
+  return hour2-hour;
+}
 
-module.exports = { question, scheduleValidation};
+
+
+module.exports = { question, scheduleValidation, getNextHour, countHour};

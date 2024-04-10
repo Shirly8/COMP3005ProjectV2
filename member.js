@@ -72,6 +72,7 @@ async function displayMemberMenu() {
   } else if (choice == 2) {
     displayDashboard(); 
   } else if (choice == 3){
+    manageSchedule();
     //schedule management
   }
 }
@@ -152,6 +153,12 @@ async function manageAccount() {
   }
   console.log('Returning to Main Menu');
   displayMemberMenu();
+}
+
+
+async function manageSchedule() {
+  let choice = await question("SCHEDULE MENU: \n1 - Personal Sessions \n2 - Group Sessions ");
+
 }
 
 module.exports = { displayMemberMenu, createAccount, login};

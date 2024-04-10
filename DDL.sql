@@ -71,11 +71,12 @@ CREATE TABlE trainers(
 );
 
 CREATE TABLE schedule(
+    time_slots SERIAL PRIMARY KEY,
     trainer_id INT NOT NULL,
     days_free VARCHAR(10) NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
-    PRIMARY KEY (trainer_id, days_free, start_time),
+    available BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (trainer_id) REFERENCES trainers
 );
 

@@ -1,5 +1,5 @@
 const {performQuery } = require('./db.js');
-const {question, scheduleValidation} = require('./functions.js');
+const {question, scheduleValidation, getNextHour, countHour} = require('./functions.js');
 var savedID = 0; 
 
 
@@ -9,7 +9,7 @@ async function updateSchedule(trainer_id, newAcc) {
     let scheduleArray = [];
     while (true) {
       try {
-        schedules = await question("Enter your schedule formatted in 24hr: 'Monday = 9:00-11:00, Tuesday = 13:00-19:00'\n");
+        schedules = await question("Enter your available time-slot in 60 min increment (24hr clock): 'Monday = 9:00-11:00, Tuesday = 13:30-19:30'\n");
         scheduleArray = schedules.split(', ');
         for(let i = 0; i < scheduleArray.length; i++) {
           let [day, time] = scheduleArray[i].split(' = ').map(s => s.trim());
@@ -25,12 +25,18 @@ async function updateSchedule(trainer_id, newAcc) {
       let [day, time] = scheduleArray[i].split(' = ').map(s => s.trim());
       let [start_time, end_time] = time.split('-').map(t => t.trim());
 
+      let hours = countHour(start_time, end_time);
+
+      for(let j = 0; j < hours; j++) {
+
       // Check if the record exists
-       const checkCommand = 'SELECT * FROM schedule WHERE trainer_id = $1 AND days_free = $2';
-       const checkValues = [trainer_id, day];
+       const checkCommand = 'SELECT * FROM schedule WHERE trainer_id = $1 AND days_free = $2 AND start_time = $3';
+       const checkValues = [trainer_id, day, start_time];
        const res = await performQuery(checkCommand, checkValues);
        savedID = trainer_id;
        let command; 
+
+       let nextHour = getNextHour(start_time);
 
        if (res.rows.length > 0) {
         command = 'UPDATE schedule SET start_time = $3, end_time = $4 WHERE trainer_id = $1 AND days_free = $2';
@@ -38,9 +44,12 @@ async function updateSchedule(trainer_id, newAcc) {
         command = 'INSERT INTO schedule (trainer_id, days_free, start_time, end_time) VALUES ($1, $2, $3, $4)';
        }
 
-      const values = [trainer_id, day, start_time, end_time];
+      const values = [trainer_id, day, start_time, nextHour];
       await performQuery(command, values);
+  
+      start_time = nextHour
     }
+  }
 
     if (newAcc) { console.log("\nTrainer Added! \n");  displayTrainerMenu(); }else {console.log("Schedule Updated!");return true}
 
@@ -143,7 +152,8 @@ async function scheduleManagement() {
               console.log('\n' + row.days_free + ':');
               currentDay = row.days_free;
             }
-            console.log(row.start_time + ' - ' + row.end_time);
+            let availability = row.available ? ' [Available] ' : '';
+            console.log(row.start_time + ' - ' + row.end_time + availability);
           }
         } else {
           console.log('NO SCHEDULE');
