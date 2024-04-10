@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS schedule;
 DROP TABLE IF EXISTS members CASCADE;
 DROP TABLE IF EXISTS personalsessions;
 DROP TABLE IF EXISTS room;
-DROP TABLE IF EXISTS equipment;
+DROP TABLE IF EXISTS equipments;
 DROP TABLE IF EXISTS billing;
 DROP TABLE IF EXISTS staff;
 DROP TABLE IF EXISTS sessionmembers;
@@ -44,12 +44,10 @@ CREATE TABLE billing (
     FOREIGN KEY(member_id) REFERENCES members
 );
 
-CREATE TABLE equipment(
+CREATE TABLE equipments(
     equipment_id SERIAL PRIMARY KEY,
-    booked_date DATE,
-    booked_time TIME,
-    member_id INT,
-    FOREIGN KEY(member_id) REFERENCES members
+    equipment_name VARCHAR(255) NOT NULL, 
+    status BOOLEAN NOT NULL 
 );
 
 CREATE TABLE room(
