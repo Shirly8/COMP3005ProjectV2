@@ -1,10 +1,15 @@
-DROP TABLE IF EXISTS trainers;
+DROP TABLE IF EXISTS groupsessions CASCADE;
+DROP TABLE IF EXISTS trainers CASCADE;
+DROP TABLE IF EXISTS schedule;
+DROP TABLE IF EXISTS members CASCADE;
+DROP TABLE IF EXISTS personalsessions;
 DROP TABLE IF EXISTS room;
 DROP TABLE IF EXISTS equipment;
 DROP TABLE IF EXISTS billing;
-DROP TABLE IF EXISTS administrativestaff;
-DROP TABLE IF EXISTS memberships;
-DROP TABLE IF EXISTS members;
+DROP TABLE IF EXISTS staff;
+DROP TABLE IF EXISTS sessionmembers;
+DROP TABLE IF EXISTS dashboard; 
+
 
 
 CREATE TABLE members (
@@ -12,14 +17,10 @@ CREATE TABLE members (
     email VARCHAR(255)  NOT NULL UNIQUE,
     password TEXT NOT NULL,
     first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
-    health_metrics TEXT,
-    fitness_goals TEXT
+    last_name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE dashboard(
--- what is the difference from health metrics, fitness goals and health statistic/fitness achivements
--- is it referencing to the members table?
     member_id int PRIMARY KEY,
     exercise_routines TEXT,
     fitness_goals TEXT,
@@ -27,7 +28,7 @@ CREATE TABLE dashboard(
     FOREIGN KEY(member_id) REFERENCES members
 );
 
-CREATE TABLE administrativestaff (
+CREATE TABLE staff (
     staff_id SERIAL PRIMARY KEY,
     email VARCHAR(255)  NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -36,11 +37,11 @@ CREATE TABLE administrativestaff (
 );
 
 CREATE TABLE billing (
-    member_id SERIAL PRIMARY KEY,
+    member_id INT PRIMARY KEY,
     amount INT,
     due_date DATE,
     paid BOOLEAN,
-    FOREIGN KEY(member_id) REFERENCES members,
+    FOREIGN KEY(member_id) REFERENCES members
 );
 
 CREATE TABLE equipment(
@@ -66,8 +67,16 @@ CREATE TABlE trainers(
     email VARCHAR(255)  NOT NULL UNIQUE,
     password TEXT NOT NULL,
     first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
-    schedule TEXT --CHANGE????, how do we want to setup how the schedule looks? another table since multivalued?
+    last_name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE schedule(
+    trainer_id INT NOT NULL,
+    days_free VARCHAR(10) NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    PRIMARY KEY (trainer_id, days_free, start_time),
+    FOREIGN KEY (trainer_id) REFERENCES trainers
 );
 
 CREATE TABLE personalsessions(
@@ -91,6 +100,7 @@ CREATE TABLE groupsessions(
 ALTER TABLE groupsessions -- makes sure that the groupsessions room_id matches to a room room_id? do we want this? adding a constraint?
 ADD CONSTRAINT fk_room_id
 FOREIGN KEY (room_id) REFERENCES room(room_id);
+
 CREATE TABLE sessionmembers(
     session_id INT,
     member_id INT,

@@ -3,13 +3,16 @@ const {question} = require('./functions.js');
 
 
 async function createAccount(email, password, firstName, lastName) {
-    const command = 'INSERT INTO administrativestaff (email, password, first_name, last_name) VALUES ($1, $2, $3, $4)';
+    const command = 'INSERT INTO staff (email, password, first_name, last_name) VALUES ($1, $2, $3, $4)';
     const values = [email, password, firstName, lastName];
-    const success = await performQuery(command, values);
-
+    try {
+    await performQuery(command, values);
     console.log("\n\nAdmin Added! \n");
     displayAdminMenu();
-    return success;
+
+    }catch (error) {
+      console.error("An error occurred:", error);
+  }
 }
 
 
@@ -17,7 +20,7 @@ async function login() {
   let email = await question("Enter email: ");
   let password = await question("Enter password: ");
 
-  const command = 'SELECT * FROM administrativestaff WHERE email = $1 AND password = $2';
+  const command = 'SELECT * FROM staff WHERE email = $1 AND password = $2';
   const values = [email, password];
   const res = await performQuery(command, values);
 
@@ -31,7 +34,7 @@ async function login() {
 }
 
 async function displayAdminMenu() {
-  console.log("\nADMINISTRATION MENU: \n");
+  console.log("\STAFF MENU: \n");
   console.log("1 - Room Booking Management");
   console.log("2 - Equipment Maintenance Monitoring");
   console.log("3 - Class Schedule Update");

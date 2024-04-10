@@ -1,4 +1,4 @@
-# 3005 FINAL PROJECT V2- Shirley Huang (101185496) AND Helen Zhu
+# 3005 FINAL PROJECT V2- Shirley Huang (101185496) AND Helen Zhu (101260141)
 
 # Students Database
 
@@ -9,7 +9,7 @@
 # Installation
 
 # Setup DataBase
-npm install
+npm install <br>
 node main.js
 
 # Running
