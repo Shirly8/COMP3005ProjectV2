@@ -20,4 +20,10 @@ VALUES
 
 INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, booked_time)
 VALUES (1, 1, 1, '2024-04-10', '10:00:00');
+INSERT INTO equipments (equipment_name, status) VALUES ('Treadmill', false);
+INSERT INTO equipments (equipment_name, status) VALUES ('Lat Machine', false);
+INSERT INTO equipments (equipment_name, status) VALUES ('Rowing Machine', true);
+
+INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, booked_time)
+VALUES (1, 1, 1, '2024-04-10', '10:00:00');
 
