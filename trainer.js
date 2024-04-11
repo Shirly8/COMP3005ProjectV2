@@ -45,8 +45,7 @@ async function updateSchedule(trainer_id, newAcc) {
        }
 
       const values = [trainer_id, day, start_time, nextHour];
-      await performQuery(command, values);
-  
+      await performQuery(command, values);console.log('');
       start_time = nextHour
     }
   }
@@ -128,7 +127,7 @@ async function scheduleManagement() {
   console.log("1 - View Schedule" );
   console.log("2 - Update Schedule - [Updating on existing will replace]"); 
   console.log("3 - Delete Schedule [By day]");   
-  console.log("3 - Go back to dashboard");  
+  console.log("4 - Go back to dashboard");  
   let choice = await question("Enter your choice or 0 to Exit: ", answer => ['1', '2', '3', '4'].includes(answer));   console.log('');
 
   if (choice === '1') {
@@ -141,32 +140,41 @@ async function scheduleManagement() {
           WHEN 'Saturday' THEN 6
           WHEN 'Sunday' THEN 7
         END`;
-        const values = [savedID];
-        const result = await performQuery(command, values);
-      
-        if (result.rows.length > 0) {
-          console.log('CURRENT SCHEDULE\n================');
-          let currentDay = '';
-          for (let row of result.rows) {
+    const values = [savedID];
+    const result = await performQuery(command, values);
+  
+    if (result.rows.length > 0) {
+        console.log('CURRENT SCHEDULE \n=====================================');
+        let currentDay = '';
+        for (let row of result.rows) {
             if (row.days_free !== currentDay) {
-              console.log('\n' + row.days_free + ':');
-              currentDay = row.days_free;
+                console.log('\n' + row.days_free + ':');
+                currentDay = row.days_free;
             }
-            let availability = row.available ? ' [Available] ' : '';
-            console.log(row.start_time + ' - ' + row.end_time + availability);
-          }
-        } else {
-          console.log('NO SCHEDULE');
+            // Fetch the session details from personalsessions and groupsessions tables
+            const sessionCommand = `SELECT booked_date, 'Personal' as session_type FROM personalsessions WHERE time_slot_id = $1 AND trainer_id = $2
+                                    UNION ALL
+                                    SELECT booked_date, 'Group' as session_type FROM groupsessions WHERE time_slot_id = $1 AND trainer_id = $2
+                                    ORDER BY booked_date`;
+            const sessionValues = [row.time_slot_id, savedID];
+            const sessionResult = await performQuery(sessionCommand, sessionValues);
+            
+            let sessionDetails = sessionResult.rows.map(session => `(${session.session_type} - ${new Date(session.booked_date).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}), `);
+            console.log(row.start_time + ' - ' + row.end_time + ':\t' + sessionDetails);
         }
-        scheduleManagement();
-
-  }else if (choice == '2') {
-    let updated = await updateSchedule(savedID, false);console.log('');
-
-    if (updated) {
-      scheduleManagement();
+    } else {
+        console.log('NO SCHEDULE');
     }
-  }else if (choice == '3') {
+    scheduleManagement();
+}
+else if (choice == '2') {
+  let updated = await updateSchedule(savedID, false);
+  console.log('');
+  if (updated) {
+    scheduleManagement();
+  }
+  }
+  else if (choice == '3') {
     let day = await question("What day would you like to delete e.g: 'Mon'): "); day = day.charAt(0).toUpperCase() + day.slice(1);
     const command = 'DELETE FROM schedule WHERE trainer_id = $1 AND days_free = $2';
     const values = [savedID, day];

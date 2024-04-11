@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS groupsessions CASCADE;
 DROP TABLE IF EXISTS trainers CASCADE;
-DROP TABLE IF EXISTS schedule;
+DROP TABLE IF EXISTS schedule CASCADE;
 DROP TABLE IF EXISTS members CASCADE;
 DROP TABLE IF EXISTS personalsessions;
 DROP TABLE IF EXISTS room;
@@ -71,32 +71,36 @@ CREATE TABlE trainers(
 );
 
 CREATE TABLE schedule(
-    time_slots SERIAL PRIMARY KEY,
+    time_slot_id SERIAL PRIMARY KEY,
     trainer_id INT NOT NULL,
     days_free VARCHAR(10) NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
-    available BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (trainer_id) REFERENCES trainers
 );
 
+--Keeps track of all personal sessions booked by MEMBER
 CREATE TABLE personalsessions(
     session_id SERIAL PRIMARY KEY,
     member_id INT NOT NULL,
-    trainer_id INT NOT NULL,
+    trainer_id INT NOT NULL,  --Not sure if we incldue this, might be redundant since TIME SLOTS has trainer
+    time_slot_id INT NOT NULL,
     booked_date DATE,
-    booked_time TIME,
+    booked_time TIME,      -- SAME THING WITH THIS: 
     FOREIGN KEY(member_id) REFERENCES members,
+    FOREIGN KEY(time_slot_id) REFERENCES schedule(time_slot_id),
     FOREIGN KEY(trainer_id) REFERENCES trainers
 );
 
 CREATE TABLE groupsessions(
     session_id SERIAL PRIMARY KEY,
-    trainer_id INT NOT NULL,
+    trainer_id INT NOT NULL,   --See above
+    time_slot_id INT NOT NULL,
     booked_date DATE,
     booked_time TIME,
     room_id INT NOT NULL, -- should this be a foreign key to room table or the other way around?
-    FOREIGN KEY(trainer_id) REFERENCES trainers
+    FOREIGN KEY(trainer_id) REFERENCES trainers,
+    FOREIGN KEY(time_slot_id) REFERENCES schedule(time_slot_id)
 );
 ALTER TABLE groupsessions -- makes sure that the groupsessions room_id matches to a room room_id? do we want this? adding a constraint?
 ADD CONSTRAINT fk_room_id

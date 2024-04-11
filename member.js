@@ -1,6 +1,7 @@
 const {performQuery} = require('./db.js');
 const {question} = require('./functions.js');
 var savedID = 0; 
+const fs = require('fs');
 
 async function createAccount(email, password, firstName, lastName, routine, goals, metrics) {
   try{
@@ -157,8 +158,91 @@ async function manageAccount() {
 
 
 async function manageSchedule() {
-  let choice = await question("SCHEDULE MENU: \n1 - Personal Sessions \n2 - Group Sessions ");
+  let choice = await question("\nSCHEDULE MENU: \n1 - See current bookings [Reschedule OR Delete]\n2 - Book personal sessions \nSelect an option: ");
+  if (choice == 1)  {
+    displaySchedule();
+  }else if (choice ==2) {
+    personalSession();
 
+  }
+}
+
+
+async function personalSession() {
+  let input = await question("Enter the date you want to book personal session (Format: 04-06-24): ");
+
+  let date = new Date(input);
+  let dayOfWeek = date.getDay();
+  let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  let dayName = days[dayOfWeek];
+
+  const command = `
+  SELECT s.*, t.first_name, t.last_name, t.trainer_id FROM schedule s
+  JOIN trainers t ON s.trainer_id = t.trainer_id
+  WHERE s.time_slot_id NOT IN (
+      SELECT time_slot_id FROM personalsessions WHERE booked_date = $1
+      UNION ALL SELECT time_slot_id FROM groupsessions WHERE booked_date = $1
+  )
+  AND s.days_free = $2;`;
+  const values = [date, dayName]
+  const result = await performQuery(command, values);
+  let trainers = {}; let times = {};
+  if (result.rows.length > 0) {
+    console.log('\nTRAINER NAME\tTIME SLOT AVAILABILE: \n=========================================');
+
+  for (let row of result.rows){  
+    console.log(row.time_slot_id+ ' - ' + `${row.first_name + ' ' + row.last_name}\t${row.start_time + ' - ' + row.end_time}`); 
+    trainers[row.time_slot_id] = row.trainer_id; 
+    times[row.time_slot_id] = row.start_time;
+  }
+  } else {
+    console.log('No availability. Please enter another date');  personalSession();
+  }
+  let number = await question("\nEnter time slots you would like to book? ");
+  let trainerId = trainers[number]; let startTime = times[number];
+
+    // Insert the new personal session
+  const commands = `INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, booked_time) VALUES ($1, $2, $3, $4, $5)`;
+  const value = [savedID, trainerId, number, date, startTime];
+  sessionadded = await performQuery(commands, value);
+  console.log('');
+
+  console.log('SESSION BOOKED! RETURNING MAIN MENU\n');   displayMemberMenu();
+}
+
+async function displaySchedule() {
+  const command = fs.readFileSync('bookingSessions.sql', 'utf8');
+  const values = [savedID];
+  const result = await performQuery(command, values);
+
+  console.log('\nID\tTRAINER NAME\tSESSION\t\tDATE[TIME]\n========================================================');
+  for (let row of result.rows) {
+    let date = new Date(row.booked_date).toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: '2-digit'});
+    console.log(`${row.session_id}\t${row.first_name} ${row.last_name}\t${row.session_type}\t${date} [${row.start_time}-${row.end_time}]`);
+  }
+
+  let action = await question("\nPress (D) to Delete, (R) to reschedule and (B) to go back: ");
+  if (action == 'D') {
+    let id = await question("Enter id to delete: ");
+   let success=  await deleteSession(id);
+    if (success) {console.log('Deleted! ');  displayDashboard();}
+  }else if (action == 'R') {
+    let id = await question("Enter id to reschedule: ");
+   let success = await deleteSession(id);
+   if (success) { await personalSession();} 
+  displayDashboard();
+}else {
+  displaySchedule();
+}
+  }
+
+async function deleteSession(id) {
+  let command = `DELETE FROM personalsessions WHERE session_id = $1`;
+  let values = [id];
+  result1 = await performQuery(command, values);
+  command = `DELETE FROM groupsessions WHERE session_id = $1`;
+  result2 = await performQuery(command, values);
+  return result1.rowCount > 0 || result2.rowCount > 0;
 }
 
 module.exports = { displayMemberMenu, createAccount, login};

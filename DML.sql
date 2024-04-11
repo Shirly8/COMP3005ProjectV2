@@ -13,3 +13,11 @@ INSERT INTO dashboard (member_id, exercise_routines, fitness_goals, health_metri
 INSERT INTO billing (member_id, amount, due_date, paid) VALUES (1, 60, '2024-04-15', false);
 INSERT INTO billing (member_id, amount, due_date, paid) VALUES (2, 60, '2024-04-20', false);
 INSERT INTO billing (member_id, amount, due_date, paid) VALUES (3, 60, '2024-04-25', true);
+
+INSERT INTO schedule(trainer_id, days_free, start_time, end_time) 
+VALUES 
+(1, 'Wednesday', '09:00', '10:00'), (1, 'Wednesday', '10:00', '11:00'),(2, 'Wednesday', '13:00', '14:00'), (3, 'Wednesdsay', '16:00', '17:00'), (3, 'Wednesdsay', '18:00', '19:00');
+
+INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, booked_time)
+VALUES (1, 1, 1, '2024-04-10', '10:00:00');
+

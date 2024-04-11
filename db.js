@@ -24,7 +24,7 @@ async function performQuery(command, values) {
 
   } catch (error) {
     console.error(`\nError: ${error.message}. \n Try again`);
-      return performQuery(command, values);
+    return;
     } finally {
     await dbConnect.end();
   }
