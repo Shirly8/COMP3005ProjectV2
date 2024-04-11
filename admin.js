@@ -59,14 +59,15 @@ async function equipmentMonitoring() {
     // need to fix spacing issue when printing in console
     const command = 'SELECT * FROM equipments ORDER BY equipment_id';
     const res = await performQuery(command, '');
-    console.log('\nID#\tEquipment\t\tStatus\n=========================================')
+    console.log('\nID#\tEquipment\tStatus\tLocation\n===============================================')
     res.rows.forEach((item) => {
-      console.log(` ${item.equipment_id}\t${item.equipment_name}\t\t${item.status}`);
+      console.log(` ${item.equipment_id}\t${item.equipment_name}\t${item.status}\t${item.room_location}`);
     });;
   } else if (choice == 2) {
     let eName = await question("Enter broken equipment name: ");
-    const command = 'INSERT INTO equipments (equipment_name, status) VALUES ($1, $2)';
-    const value = [eName, false];
+    let location = await question("Enter location of broken equipment: ");
+    const command = 'INSERT INTO equipments (equipment_name, status, room_location) VALUES ($1, $2, $3)';
+    const value = [eName, false, location];
     await performQuery(command, value);
     console.log('Broken Equipment was added');
   } else if (choice == 3) {
