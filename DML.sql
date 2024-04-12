@@ -92,3 +92,9 @@ INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, 
 (1, 3, 28, '2024-04-12', '11:00:00'), 
 (2, 3, 31, '2024-04-13', '17:00:00'), 
 (3, 3, 29, '2024-04-13', '13:00:00');
+
+INSERT INTO groupsessions (trainer_id, time_slot_id, booked_date, booked_time, session_type, room_id) VALUES 
+(1, 8, '2024-04-18', '14:00:00', 'Pilates', 1),
+(3, 28, '2024-04-19', '11:00:00', 'Intense Workout', 1),
+(3, 31, '2024-04-20', '14:00:00', 'Kick Boxing', 1)
+
