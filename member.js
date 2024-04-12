@@ -74,17 +74,17 @@ async function displayMemberMenu() {
     displayDashboard(); 
   } else if (choice == 3){
     displaySchedule();
-    //schedule management
   }
 }
 
+// displays the member's dashboard to the user 
 async function displayDashboard() {
-  console.log(savedID)
   const command = 'SELECT * FROM dashboard WHERE member_id = $1;';
   const value = [savedID]
   const data = await performQuery(command, value);
   const command2 = 'SELECT * FROM members WHERE member_id = $1;';
   const data2 = await performQuery(command2, value);
+  // displays the member's account information 
   console.log("\nDashboard Menu\n=======================")
   data2.rows.forEach((item) => {
     console.log(`MemberID: ${item.member_id}`);
@@ -93,37 +93,45 @@ async function displayDashboard() {
     console.log(`First Name: ${item.first_name}`);
     console.log(`Last Name: ${item.last_name}`);
   });;
+  // displays the member's health information 
   data.rows.forEach((item) => {
     console.log(`Exercise Routines: ${item.exercise_routines}`);
     console.log(`Fitness Goals: ${item.fitness_goals}`);
     console.log(`Health Metrics: ${item.health_metrics}`);
   });;
+  // goes back to the member menu 
   displayMemberMenu();
 }
 
+// member can update their information
 async function manageAccount() {
   let choice = await question("PROFILE MENU: \n1 - Update Personal Information \n2 - Update Exercise Routine, Fitness Goals, Health Metrics \n3 - Return to Main Menu \nEnter your choice: ");
+  // allows user to update their personal account information 
   if (choice == 1) {
     let answer = await question("1 - Update First Name\n2 - Update Last Name\n3 - Change Email \n4 - Change Password \n5 - Return to Main Menu \nEnter your choice: ");
     if (answer == 1) {
+      // changing first name of account
       let newFname = await question('Enter new first name: ');
       const command = 'UPDATE members SET first_name = $1 WHERE member_id = $2';
       const values = [newFname, savedID];
       await performQuery(command, values);
       console.log('First Name was successfully updated');
     } else if (answer == 2) {
+      // changing last name of account
       let newLname = await question('Enter new last name: ');
       const command = 'UPDATE members SET last_name = $1 WHERE member_id = $2';
       const values = [newLname, savedID];
       await performQuery(command, values);
       console.log('Last Name was successfully updated');
     } else if (answer == 3) {
+      // changing account's email
       let newEmail = await question('Enter new email: ');
       const command = 'UPDATE members SET email = $1 WHERE member_id = $2';
       const values = [newEmail, savedID];
       await performQuery(command, values);
       console.log('Email was successfully updated');
     } else if (answer == 4) {
+      // changing account's password
       let newFname = await question('Enter new password: ');
       const command = 'UPDATE members SET password = $1 WHERE member_id = $2';
       const values = [newFname, savedID];
@@ -131,20 +139,24 @@ async function manageAccount() {
       console.log('Password was successfully updated');
     } 
   } else if (choice == 2) {
+    // member can update their own health information 
     let answer = await question("1 - Update Exercise Routine\n2 - Update Fitness Goals\n3 - Update Health Metrics \n4 - Return to Main Menu \nEnter your choice: ");
     if (answer == 1) {
+      // changing exercise routine 
       let newRoutine = await question('Enter new exercise routine: ');
       const command = 'UPDATE dashboard SET exercise_routines = $1 WHERE member_id = $2';
       const values = [newRoutine, savedID];
       await performQuery(command, values);
       console.log('Exercise routine was successfully updated');
     } else if (answer == 2) {
+      // changing fitness goals
       let newGoal = await question('Enter new fitness goals: ');
       const command = 'UPDATE dashboard SET fitness_goals = $1 WHERE member_id = $2';
       const values = [newGoal, savedID];
       await performQuery(command, values);
       console.log('Fitness goal was successfully updated');
     } else if (answer == 3) {
+      // changing health metrics 
       let newMetrics = await question('Enter new health metrics: ');
       const command = 'UPDATE dashboard SET health_metrics = $1 WHERE member_id = $2';
       const values = [newMetrics, savedID];

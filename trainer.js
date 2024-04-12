@@ -96,13 +96,16 @@ async function displayTrainerMenu() {
   }
 }
 
+// member viewing function where trainer can search for a member based on their first and last name 
 async function membersearching(){
   let fullName = await question("Enter Member's Name: ");
   const flname = fullName.split(" ")
   const command = 'SELECT member_id FROM members WHERE first_name = $1 AND last_name = $2;'  
   const id = await performQuery(command, flname);
   const memberID = id.rows[0].member_id;
+  // checks if the member exists based on name given 
   if (memberID > 0) {
+    // if exists then prints out all their information except password 
     let command = 'SELECT * FROM members WHERE member_id = $1';
     let value = [memberID]; 
     let data = await performQuery(command, value);
@@ -119,7 +122,7 @@ async function membersearching(){
       console.log(`Fitness Goals: ${item.fitness_goals}`);
       console.log(`Health Metrics: ${item.health_metrics}`);
     });;
-  } else console.log("Unable to find specified member")
+  } else console.log("Unable to find specified member") // tells trainer that it can't find the member based on their name and goes back to main menu
   displayTrainerMenu();
 }
 
