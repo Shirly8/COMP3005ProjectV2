@@ -1,4 +1,13 @@
-  SELECT t.first_name, t.last_name, s.session_type, s.booked_date, sch.start_time, sch.end_time, s.session_id
+  
+  --DISPLAYS ALL THE SESSIONS FOR MEMBERS WITH THESE CONSTRAINTS
+  -- eNSURING FROM personalsessions and groupsessions DISPLAYING AS Personal or Groups
+  -- Ensuring these tables matches the member_id to the members table
+  -- Pulls out the dates according to the schedules table with time slots
+  SELECT t.first_name, t.last_name, s.session_type, s.booked_date, sch.start_time, sch.end_time,
+    CASE
+    WHEN s.session_type = 'Personal' THEN CONCAT('P', s.session_id)
+    WHEN s.session_type = 'Group   ' THEN CONCAT('G', s.session_id)
+  END as session_id
   FROM (
     SELECT 'Personal' as session_type, booked_date, time_slot_id, trainer_id, session_id
     FROM personalsessions

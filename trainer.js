@@ -170,15 +170,15 @@ async function scheduleManagement() {
     console.log("B - Go back to dashboard");  
     let choice = await question("Enter your choice or 0 to Exit: ", answer => ['1', '2', '3', '4'].includes(answer));   console.log('');
   
-  if (choice == '2') {
+  if (choice == '1') {
   let updated = await updateSchedule(savedID, false);
   console.log('');
   if (updated) {
     scheduleManagement();
   }
   }
-  else if (choice == '3') {
-    let day = await question("What day would you like to delete e.g: 'Mon'): "); day = day.charAt(0).toUpperCase() + day.slice(1);
+  else if (choice == '2') {
+    let day = await question("What day would you like to delete e.g: 'Monday'): "); day = day.charAt(0).toUpperCase() + day.slice(1);
     const command = 'DELETE FROM schedule WHERE trainer_id = $1 AND days_free = $2';
     const values = [savedID, day];
     await performQuery(command, values);

@@ -49,14 +49,14 @@ INSERT INTO schedule(trainer_id, days_free, start_time, end_time) VALUES
 -- FOR MEMBERS: 
 INSERT INTO members (email, password, first_name, last_name) VALUES 
 ('member', 'password', 'Taylor', 'Swift'),
-('trainer1@example.com', 'password1', 'Ariana', 'Grande'),
-('trainer2@example.com', 'password2', 'Justin', 'Bieber');
+('member1@example.com', 'password1', 'Ariana', 'Grande'),
+('member2@example.com', 'password2', 'Justin', 'Bieber');
 
 -- FOR STAFF
 INSERT INTO staff (email, password, first_name, last_name) VALUES 
 ('admin', 'password', 'Leo', 'DiCaprio'),
-('trainer1@example.com', 'password1', 'Jackie', 'Chan'),
- ('trainer2@example.com', 'password2', 'Will', 'Smith');
+('admin1@example.com', 'password1', 'Jackie', 'Chan'),
+ ('admin2@example.com', 'password2', 'Will', 'Smith');
 
 -- FOR MEMBERS DASHBOARD
 INSERT INTO dashboard (member_id, exercise_routines, fitness_goals, health_metrics) VALUES 
@@ -86,13 +86,13 @@ INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, 
 
 -- For Michael
 INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, booked_time) VALUES 
-(1, 2, 13, '2024-04-11', '09:00:00'), 
-(2, 2, 22, '2024-04-15', '13:00:00'), 
+(2, 2, 13, '2024-04-11', '09:00:00'), 
+(1, 2, 22, '2024-04-15', '13:00:00'), 
 (3, 2, 19, '2024-04-13', '14:00:00');
 
 -- For Elvis
 INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, booked_time) VALUES 
-(1, 3, 28, '2024-04-12', '11:00:00'), 
+(1, 3, 27, '2024-04-19', '11:00:00'), 
 (2, 3, 31, '2024-04-13', '17:00:00'), 
 (3, 3, 29, '2024-04-13', '13:00:00');
 
@@ -120,4 +120,9 @@ INSERT INTO groupsessions (trainer_id, time_slot_id, booked_date, booked_time, s
     (2, 17, '2024-04-13', '15:00:00', 'HIIT', 8),
     (3, 31, '2024-04-20', '14:00:00', 'Boxing', 9),
     (3, 30, '2024-04-13', '14:00:00', 'Boxing', 10);
+
+-- FOR SESSION MEMBERS
+INSERT INTO sessionmembers (session_id, member_id)
+VALUES (3,1),(6,1),(1,2),(2,2),(3,2),(5,2), (7,2), (1,3), (3,3), (6,3), (4,3);
+
 

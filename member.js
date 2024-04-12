@@ -1,3 +1,4 @@
+const { group } = require('console');
 const {performQuery} = require('./db.js');
 const {question} = require('./functions.js');
 var savedID = 0; 
@@ -242,7 +243,7 @@ async function personalSession() {
   sessionadded = await performQuery(commands, value);
   console.log('');
 
-  console.log('SESSION BOOKED! RETURNING MAIN MENU\n');   personalSession();
+  console.log('SESSION BOOKED! RETURNING MAIN MENU\n');   displayMemberMenu();
 }
 
 async function displaySchedule() {
@@ -262,26 +263,35 @@ async function displaySchedule() {
   }else if (action == 2) {
     groupSession();
   }else if (action == 'D') {
-    let id = await question("Enter id to delete: ");
+    let id = await question("Enter id to delete [E.g P1, G3]: ");
    let success=  await deleteSession(id);
     if (success) {console.log('Deleted! ');  displaySchedule();}
   }else if (action == 'R') {
-    let id = await question("Enter id to reschedule: ");
+  let id = await question("Enter id to reschedule [E.g P1, G3]: ");
    let success = await deleteSession(id);
-   if (success) { await displaySchedule();} 
-  displayDashboard();
+   if (success) { 
+    if (id.startsWith('P')) {personalSession();
+    }else if (id.startsWith('G')) {groupSession();}
+   } 
 }else if (action == 'B'){
   displayMemberMenu();
 }
   }
-
-async function deleteSession(id) {
-  let command = `DELETE FROM personalsessions WHERE session_id = $1`;
-  let values = [id];
-  result1 = await performQuery(command, values);
-  command = `DELETE FROM groupsessions WHERE session_id = $1`;
-  result2 = await performQuery(command, values);
-  return result1.rowCount > 0 || result2.rowCount > 0;
-}
+  async function deleteSession(id) {
+    let command;
+    if (id.startsWith('P')) {
+      command = `DELETE FROM personalsessions WHERE session_id = $1`;
+    } else if (id.startsWith('G')) {
+      command = `DELETE FROM sessionmembers WHERE session_id = $1`;
+    } else {
+      console.log('Invalid id. Please try again');
+      displaySchedule();
+    }
+  
+    let values = [id.substring(1)]; //Take the second character of the id
+    let result = await performQuery(command, values);
+    return result.rowCount > 0;
+  }
+  
 
 module.exports = { displayMemberMenu, createAccount, login};
