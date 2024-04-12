@@ -6,9 +6,9 @@
 
 # Files
 SQL FOLDER: 
-    DML.sql - creates table 
-    DDL.sql - inserts data into table
-    bookingSessions.sql - to run a query for members to book a personal or group session 
+&emsp; DML.sql - creates table 
+&emsp; DDL.sql - inserts data into table
+&emsp; BookingSessions.sql - to run a query for members to book a personal or group session 
 # Installation
 
 # Setup DataBase
