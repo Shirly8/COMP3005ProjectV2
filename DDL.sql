@@ -54,9 +54,7 @@ CREATE TABLE room(
     room_location VARCHAR(255) NOT NULL,
     event_type VARCHAR(255) NOT NULL,
     start_date DATE,
-    end_date DATE,
-    start_time TIME,
-    end_time TIME
+    start_time TIME
 );
 
 CREATE TABlE trainers(
