@@ -93,13 +93,27 @@ INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, 
 (2, 3, 31, '2024-04-13', '17:00:00'), 
 (3, 3, 29, '2024-04-13', '13:00:00');
 
-INSERT INTO groupsessions (trainer_id, time_slot_id, booked_date, booked_time, session_type, room_id) VALUES 
-(1, 8, '2024-04-19', '14:00:00', 'Yoga', 1), 
-(1, 11, '2024-04-13', '11:00:00', 'Pilates', 1),
-(1, 11, '2024-04-20', '11:00:00', 'Pilates', 1),
-(3, 28, '2024-04-19', '11:00:00', 'HIIT', 1),
-(2, 17, '2024-04-13', '15:00:00', 'HIIT', 1),
-(3, 31, '2024-04-20', '14:00:00', 'Boxing', 1),
-(3, 30, '2024-04-13', '14:00:00', 'Boxing', 1)
+INSERT INTO rooms (room_location, event_type, start_date, start_time)
+VALUES 
+    ('Room 1', 'Meeting', '2024-04-12', '09:00:00'),
+    ('Room 2', 'Conference', '2024-04-13', '10:30:00'),
+    ('Room 3', 'Workshop', '2024-04-14', '13:00:00'),
+    ('Room 4', 'Yoga', '2024-04-19', '14:00:00'), 
+    ('Room 5', 'Pilates', '2024-04-13', '11:00:00'),
+    ('Room 5', 'Pilates', '2024-04-20', '11:00:00'),
+    ('Room 7', 'HIIT', '2024-04-19', '11:00:00'),
+    ('Room 7', 'HIIT', '2024-04-13', '15:00:00'),
+    ('Room 8', 'Boxing', '2024-04-20', '14:00:00'),
+    ('Room 8', 'Boxing', '2024-04-13', '14:00:00');
 
+-- Now, insert data into the groupsessions table
+INSERT INTO groupsessions (trainer_id, time_slot_id, booked_date, booked_time, session_type, room_id)
+ VALUES 
+    (1, 8, '2024-04-19', '14:00:00', 'Yoga', 4), 
+    (1, 11, '2024-04-13', '11:00:00', 'Pilates', 5),
+    (1, 11, '2024-04-20', '11:00:00', 'Pilates', 6),
+    (3, 28, '2024-04-19', '11:00:00', 'HIIT', 7),
+    (2, 17, '2024-04-13', '15:00:00', 'HIIT', 8),
+    (3, 31, '2024-04-20', '14:00:00', 'Boxing', 9),
+    (3, 30, '2024-04-13', '14:00:00', 'Boxing', 10);
 
