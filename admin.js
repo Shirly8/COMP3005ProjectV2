@@ -47,16 +47,134 @@ async function displayAdminMenu() {
   } else if (choice == 2){
     equipmentMonitoring(); 
   } else if (choice == 3) {
-    // class schedule update 
+    classScheduleUpdate();
   }
   else if (choice == 4) {
     processPayment();
   }
 }
+
+async function classScheduleUpdate() {
+  var choice = await question("\n1 - View Class Schedule \n2 - Update Class Schedule \n3 - Create New Class\n4 - Return to Main Menu\nEnter your choice: ");
+  if (choice == 1) {
+    // need to do room schedule first and then use this command 
+    // `SELECT groupsessions.session_id, trainers.first_name || ' ' || trainers.last_name AS trainer_name, groupsessions.booked_date, groupsessions.booked_time, groupsessions.session_type, room.room_location
+    // FROM groupsessions
+    // JOIN trainers ON groupsessions.trainer_id = trainers.trainer_id
+    // JOIN room ON groupsessions.room_id = room.room_id;`
+    const command = 
+    `SELECT groupsessions.session_id, trainers.first_name || ' ' || trainers.last_name AS trainer_name, groupsessions.booked_date, groupsessions.booked_time, groupsessions.session_type
+    FROM groupsessions
+    JOIN trainers ON groupsessions.trainer_id = trainers.trainer_id`
+    const res = await performQuery(command, '');
+    console.log('ID#\tTrainer Name \t\tBooked Date \tBooked Time \t\tType of Session \tRoom Location');
+  
+    res.rows.forEach(session => {
+      const bookedDate = new Date(session.booked_date);
+      const month = bookedDate.getMonth() + 1; 
+      const day = bookedDate.getDate();
+      const year = bookedDate.getFullYear();
+      const formattedDate = `${month}/${day}/${year}`;
+      console.log(`${session.session_id} \t${session.trainer_name} \t\t${formattedDate} \t${session.booked_time} \t\t${session.session_type} \t${session.room_location}`);   
+     });
+  } else if (choice == 2) {
+    let answer = await question('1 - Change Time/Date/Trainer \n2 - Change Session Type\n3 - Change Room');
+    if (answer == 1) groupSessionsUpdateSchedule();
+    else if (answer == 2) {
+      let groupID = await question('Enter ID# for the group session you want to change: ');
+      let sessionType = await question("Enter new group session type: ")
+      const commands = `UPDATE groupsessions SET session_type = $1 WHERE session_id = $2`;
+      const value = [sessionType, groupID];
+      await performQuery(commands, value);
+    }
+  } else if (choice == 3) {
+    groupsessionsCreate();
+  } else if (choice == 4) {
+    displayAdminMenu();
+  } classScheduleUpdate(); 
+}
+
+async function groupSessionsUpdateSchedule(){
+  let groupID = await question('Enter ID# for the group session you want to change: ');
+  let newDate = await question('Enter the new date for the group session (Format: 04-06-24): ')
+  let date = new Date(newDate);
+  let dayOfWeek = date.getDay();
+  let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  let dayName = days[dayOfWeek];
+
+  const command = `
+  SELECT s.*, t.first_name, t.last_name, t.trainer_id FROM schedule s
+  JOIN trainers t ON s.trainer_id = t.trainer_id
+  WHERE s.time_slot_id NOT IN (
+      SELECT time_slot_id FROM personalsessions WHERE booked_date = $1
+      UNION ALL SELECT time_slot_id FROM groupsessions WHERE booked_date = $1
+  )
+  AND s.days_free = $2;`;
+  const values = [date, dayName]
+  const result = await performQuery(command, values);
+  let trainers = {}; let times = {};
+  if (result.rows.length > 0) {
+    console.log('\nTRAINER NAME\tTIME SLOT AVAILABILE: \n=========================================');
+
+  for (let row of result.rows){  
+    console.log(row.time_slot_id+ ' - ' + `${row.first_name + ' ' + row.last_name}\t${row.start_time + ' - ' + row.end_time}`); 
+    trainers[row.time_slot_id] = row.trainer_id; 
+    times[row.time_slot_id] = row.start_time;
+  }
+  } else {
+    console.log('No availability. Please enter another date');  groupsessionsCreate();
+  }
+  let number = await question("\nEnter time slots you would like to book?: ");
+  let trainerId = trainers[number]; let startTime = times[number];
+  const commands = `UPDATE groupsessions SET trainer_id = $1, time_slot_id = $2, booked_date = $3, booked_time = $4 WHERE session_id = $5`;
+  const value = [trainerId, number, date, startTime, groupID];
+  sessionadded = await performQuery(commands, value);
+  classScheduleUpdate(); 
+}
+
+async function groupsessionsCreate(){
+  let input = await question("Enter the date you want to create group session (Format: 04-06-24): ");
+
+  let date = new Date(input);
+  let dayOfWeek = date.getDay();
+  let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  let dayName = days[dayOfWeek];
+
+  const command = `
+  SELECT s.*, t.first_name, t.last_name, t.trainer_id FROM schedule s
+  JOIN trainers t ON s.trainer_id = t.trainer_id
+  WHERE s.time_slot_id NOT IN (
+      SELECT time_slot_id FROM personalsessions WHERE booked_date = $1
+      UNION ALL SELECT time_slot_id FROM groupsessions WHERE booked_date = $1
+  )
+  AND s.days_free = $2;`;
+  const values = [date, dayName]
+  const result = await performQuery(command, values);
+  let trainers = {}; let times = {};
+  if (result.rows.length > 0) {
+    console.log('\nTRAINER NAME\tTIME SLOT AVAILABILE: \n=========================================');
+
+  for (let row of result.rows){  
+    console.log(row.time_slot_id+ ' - ' + `${row.first_name + ' ' + row.last_name}\t${row.start_time + ' - ' + row.end_time}`); 
+    trainers[row.time_slot_id] = row.trainer_id; 
+    times[row.time_slot_id] = row.start_time;
+  }
+  } else {
+    console.log('No availability. Please enter another date');  groupsessionsCreate();
+  }
+  let number = await question("\nEnter time slots you would like to book?: ");
+  let trainerId = trainers[number]; let startTime = times[number];
+  let typeOfSession = await question("What type of group session is it?: ")
+  const commands = `INSERT INTO groupsessions (trainer_id, time_slot_id, booked_date, booked_time, session_type, room_id) VALUES ($1, $2, $3, $4, $5, $6)`;
+  const value = [trainerId, number, date, startTime, typeOfSession, 1];
+  sessionadded = await performQuery(commands, value);
+  console.log('');
+  classScheduleUpdate();
+}
+
 async function equipmentMonitoring() {
   var choice = await question("\n1 - View All Equipment\n2 - Add Broken Equipment \n3 - Change Status of Equipment\n4 - Return to Main Menu\nEnter your choice: ");
   if (choice == 1) { 
-    // need to fix spacing issue when printing in console
     const command = 'SELECT * FROM equipments ORDER BY equipment_id';
     const res = await performQuery(command, '');
     console.log('\nID#\tEquipment\tStatus\tLocation\n===============================================')
