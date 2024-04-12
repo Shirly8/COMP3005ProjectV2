@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS trainers CASCADE;
 DROP TABLE IF EXISTS schedule CASCADE;
 DROP TABLE IF EXISTS members CASCADE;
 DROP TABLE IF EXISTS personalsessions;
-DROP TABLE IF EXISTS room;
+DROP TABLE IF EXISTS rooms;
 DROP TABLE IF EXISTS equipments;
 DROP TABLE IF EXISTS billing;
 DROP TABLE IF EXISTS staff;
@@ -49,7 +49,7 @@ CREATE TABLE equipments(
     room_location VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE room(
+CREATE TABLE rooms(
     room_id SERIAL PRIMARY KEY,
     room_location VARCHAR(255) NOT NULL,
     event_type VARCHAR(255) NOT NULL,
@@ -96,12 +96,9 @@ CREATE TABLE groupsessions(
     session_type VARCHAR(225) NOT NULL, 
     room_id INT NOT NULL, -- should this be a foreign key to room table or the other way around?
     FOREIGN KEY(trainer_id) REFERENCES trainers,
-    FOREIGN KEY(time_slot_id) REFERENCES schedule(time_slot_id)
+    FOREIGN KEY(time_slot_id) REFERENCES schedule(time_slot_id),
+    FOREIGN KEY(room_id) REFERENCES rooms(room_id)
 );
--- ALTER TABLE groupsessions -- makes sure that the groupsessions room_id matches to a room room_id? do we want this? adding a constraint?
--- ADD CONSTRAINT fk_room_id
--- FOREIGN KEY (room_id) REFERENCES room(room_id);
-
 CREATE TABLE sessionmembers(
     session_id INT,
     member_id INT,
