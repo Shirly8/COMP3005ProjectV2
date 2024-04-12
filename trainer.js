@@ -159,7 +159,7 @@ async function scheduleManagement() {
             const sessionValues = [row.time_slot_id, savedID];
             const sessionResult = await performQuery(sessionCommand, sessionValues);
             
-            let sessionDetails = sessionResult.rows.map(session => `(${session.session_type} - ${new Date(session.booked_date).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}) `);
+            let sessionDetails = sessionResult.rows.map(session => `(${session.session_type} - ${new Date(session.booked_date).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})})`);
             console.log(row.start_time + ' - ' + row.end_time + ':\t' + sessionDetails);
         }
     } else {

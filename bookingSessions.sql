@@ -4,7 +4,7 @@
     FROM personalsessions
     WHERE member_id = $1
     UNION ALL
-    SELECT 'Group' as session_type, booked_date, time_slot_id, trainer_id, session_id
+    SELECT 'Group   ' as session_type, booked_date, time_slot_id, trainer_id, session_id
     FROM groupsessions
     WHERE session_id IN (
       SELECT session_id FROM sessionmembers WHERE member_id = $1

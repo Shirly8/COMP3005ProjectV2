@@ -73,7 +73,7 @@ async function displayMemberMenu() {
   } else if (choice == 2) {
     displayDashboard(); 
   } else if (choice == 3){
-    manageSchedule();
+    displaySchedule();
     //schedule management
   }
 }
@@ -157,15 +157,38 @@ async function manageAccount() {
 }
 
 
-async function manageSchedule() {
-  let choice = await question("\nSCHEDULE MENU: \n1 - See current bookings [Reschedule OR Delete]\n2 - Book personal sessions \nSelect an option: ");
-  if (choice == 1)  {
-    displaySchedule();
-  }else if (choice ==2) {
-    personalSession();
 
+
+async function groupSession() {
+  const command = `
+  SELECT 
+  gs.session_id AS "GroupId", t.first_name || ' ' || t.last_name AS "TrainerName", gs.session_type AS "Type",gs.room_id AS "Room", TO_CHAR(gs.booked_date, 'MM-DD-YY') AS "Date", TO_CHAR(gs.booked_time, 'HH24:MI') AS "Time"
+FROM 
+  groupsessions gs
+  JOIN trainers t ON gs.trainer_id = t.trainer_id;`;
+
+  const result = await performQuery(command);
+    
+    if (result.rows.length > 0) {
+          console.log('\nID | Trainer Name\tClass\tRoom #\tDate\t\tTime\n=============================================================');
+      
+        for (let row of result.rows){  
+          console.log(row.GroupId+ ' - ' + `${row.TrainerName}\t${row.Type}\t${row.Room}\t${row.Date}\t${row.Time}`); 
+        }
+      }
+
+  let number = await question("\nEnter group session you would like to book? ");
+  const insertCommand = `
+  INSERT INTO sessionmembers (session_id, member_id)
+  VALUES (${number}, ${savedID});`;
+  const insertResult = await performQuery(insertCommand);
+  if (insertResult.rowCount > 0) {
+    console.log("Successfully booked!\n"); displaySchedule();
   }
-}
+ 
+  }
+
+
 
 
 async function personalSession() {
@@ -221,15 +244,19 @@ async function displaySchedule() {
     console.log(`${row.session_id}\t${row.first_name} ${row.last_name}\t${row.session_type}\t${date} [${row.start_time}-${row.end_time}]`);
   }
 
-  let action = await question("\nPress (D) to Delete, (R) to reschedule and (B) to go back: ");
-  if (action == 'D') {
+  let action = await question("\nSCHEDULE MENU: \nD - Delete \nR - Reschedule \n1 - Book personal session\n2 - Book Group Session\nB - Back to Member Menu\nSelect an option: ");
+  if (action ==1) {
+    personalSession();
+  }else if (action == 2) {
+    groupSession();
+  }else if (action == 'D') {
     let id = await question("Enter id to delete: ");
    let success=  await deleteSession(id);
-    if (success) {console.log('Deleted! ');  displayDashboard();}
+    if (success) {console.log('Deleted! ');  displaySchedule();}
   }else if (action == 'R') {
     let id = await question("Enter id to reschedule: ");
    let success = await deleteSession(id);
-   if (success) { await personalSession();} 
+   if (success) { await displaySchedule();} 
   displayDashboard();
 }else if (action == 'B'){
   displayMemberMenu();
