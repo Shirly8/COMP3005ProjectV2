@@ -246,7 +246,7 @@ async function personalSession() {
 }
 
 async function displaySchedule() {
-  const command = fs.readFileSync('bookingSessions.sql', 'utf8');
+  const command = fs.readFileSync('./SQL/bookingSessions.sql', 'utf8');
   const values = [savedID];
   const result = await performQuery(command, values);
 
