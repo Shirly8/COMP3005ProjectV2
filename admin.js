@@ -68,7 +68,7 @@ async function roomBookingManagement(){
       console.log(`${session.room_location} \t\t${formattedDate} \t${session.start_time}\t${session.event_type}`);   
      });
   } else if (choice == 2) {
-
+    
   } else if (choice == 3) {
 
   } else if (choice == 4) {
@@ -223,8 +223,13 @@ async function groupsessionsCreate(){
   let number = await question("\nEnter time slots you would like to book?: ");
   let trainerId = trainers[number]; let startTime = times[number];
   let typeOfSession = await question("What type of group session is it?: ")
+  let room = await question("Enter room # for the group session (ie. Format: Room 7): ");
+  const roomCreate = `INSERT INTO rooms (room_location, event_type, start_date, start_time) VALUES ($1, $2, $3, $4) RETURNING room_id`
+  const roomValues = [room, typeOfSession, date, startTime];
+  let resultRoom = await performQuery(roomCreate, roomValues);
+  const roomID = resultRoom.rows[0].room_id;
   const commands = `INSERT INTO groupsessions (trainer_id, time_slot_id, booked_date, booked_time, session_type, room_id) VALUES ($1, $2, $3, $4, $5, $6)`;
-  const value = [trainerId, number, date, startTime, typeOfSession, 1];
+  const value = [trainerId, number, date, startTime, typeOfSession, roomID];
   sessionadded = await performQuery(commands, value);
   console.log('');
   classScheduleUpdate();
