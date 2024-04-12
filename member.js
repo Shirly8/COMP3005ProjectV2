@@ -207,7 +207,7 @@ async function personalSession() {
   sessionadded = await performQuery(commands, value);
   console.log('');
 
-  console.log('SESSION BOOKED! RETURNING MAIN MENU\n');   displayMemberMenu();
+  console.log('SESSION BOOKED! RETURNING MAIN MENU\n');   personalSession();
 }
 
 async function displaySchedule() {
@@ -231,8 +231,8 @@ async function displaySchedule() {
    let success = await deleteSession(id);
    if (success) { await personalSession();} 
   displayDashboard();
-}else {
-  displaySchedule();
+}else if (action == 'B'){
+  displayMemberMenu();
 }
   }
 
