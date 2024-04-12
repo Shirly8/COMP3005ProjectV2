@@ -56,7 +56,17 @@ async function displayAdminMenu() {
 async function roomBookingManagement(){
   var choice = await question("\n1 - View Room Bookings \n2 - Update Room Bookings \n3 - Create New Room Booking\n4 - Return to Main Menu\nEnter your choice: ");
   if (choice == 1) {
-    
+    const command = `SELECT * from rooms`
+    const res = await performQuery(command, '');
+    console.log('Location \tBooked Date \tBooked Time \tType of Session');
+    res.rows.forEach(session => {
+      const bookedDate = new Date(session.start_date);
+      const month = bookedDate.getMonth() + 1; 
+      const day = bookedDate.getDate();
+      const year = bookedDate.getFullYear();
+      const formattedDate = `${month}/${day}/${year}`;
+      console.log(`${session.room_location} \t\t${formattedDate} \t${session.start_time}\t${session.event_type}`);   
+     });
   } else if (choice == 2) {
 
   } else if (choice == 3) {
@@ -70,25 +80,38 @@ async function classScheduleUpdate() {
   var choice = await question("\n1 - View Class Schedule \n2 - Update Class Schedule \n3 - Create New Class\n4 - Return to Main Menu\nEnter your choice: ");
   if (choice == 1) {
     // need to do room schedule first and then use this command 
-    // `SELECT groupsessions.session_id, trainers.first_name || ' ' || trainers.last_name AS trainer_name, groupsessions.booked_date, groupsessions.booked_time, groupsessions.session_type, room.room_location
-    // FROM groupsessions
-    // JOIN trainers ON groupsessions.trainer_id = trainers.trainer_id
-    // JOIN room ON groupsessions.room_id = room.room_id;`
     const command = 
-    `SELECT groupsessions.session_id, trainers.first_name || ' ' || trainers.last_name AS trainer_name, groupsessions.booked_date, groupsessions.booked_time, groupsessions.session_type
-    FROM groupsessions
-    JOIN trainers ON groupsessions.trainer_id = trainers.trainer_id`
+      `SELECT 
+      groupsessions.session_id, 
+      trainers.first_name || ' ' || trainers.last_name AS trainer_name, 
+      groupsessions.booked_date, 
+      groupsessions.booked_time, 
+      groupsessions.session_type,
+      rooms.room_location
+      FROM 
+        groupsessions
+      JOIN 
+        trainers ON groupsessions.trainer_id = trainers.trainer_id
+      JOIN
+        rooms ON groupsessions.room_id = rooms.room_id;`
     const res = await performQuery(command, '');
-    console.log('ID#\tTrainer Name \t\tBooked Date \tBooked Time \t\tType of Session \tRoom Location');
-  
+    console.log('ID#\tTrainer Name\t\t\tBooked Date\tBooked Time\tType of Session\t\tRoom Location');
     res.rows.forEach(session => {
-      const bookedDate = new Date(session.booked_date);
-      const month = bookedDate.getMonth() + 1; 
-      const day = bookedDate.getDate();
-      const year = bookedDate.getFullYear();
-      const formattedDate = `${month}/${day}/${year}`;
-      console.log(`${session.session_id} \t${session.trainer_name} \t\t${formattedDate} \t${session.booked_time} \t\t${session.session_type} \t${session.room_location}`);   
-     });
+        const bookedDate = new Date(session.booked_date);
+        const month = bookedDate.getMonth() + 1; 
+        const day = bookedDate.getDate();
+        const year = bookedDate.getFullYear();
+        const formattedDate = `${month}/${day}/${year}`;
+
+        // Padding for each column to ensure fixed width
+        const paddedSessionId = session.session_id.toString().padEnd(6, ' ');
+        const paddedTrainerName = session.trainer_name.padEnd(24, ' ');
+        const paddedFormattedDate = formattedDate.padEnd(12, ' ');
+        const paddedBookedTime = session.booked_time.padEnd(14, ' ');
+        const paddedSessionType = session.session_type.padEnd(20, ' ');
+
+        console.log(`${paddedSessionId}\t${paddedTrainerName}\t${paddedFormattedDate}\t${paddedBookedTime}\t${paddedSessionType}\t${session.room_location}`);  
+    }); 
   } else if (choice == 2) {
     let answer = await question('1 - Change Time/Date/Trainer \n2 - Change Session Type\n3 - Change Room\nEnter your choice: ');
     if (answer == 1) groupSessionsUpdateSchedule();
@@ -98,7 +121,27 @@ async function classScheduleUpdate() {
       const commands = `UPDATE groupsessions SET session_type = $1 WHERE session_id = $2`;
       const value = [sessionType, groupID];
       await performQuery(commands, value);
-    }
+    } else if (answer == 3) {
+      let groupID = await question("Enter ID# for the group session you want to change: ");
+      let location = await question("Enter new room # (ie. Format: Room 7): ")
+      let command = `UPDATE rooms
+      SET room_location = (
+          SELECT $2 AS new_room_location
+          FROM rooms
+          WHERE room_id = (
+              SELECT room_id
+              FROM groupsessions
+              WHERE session_id = $1 
+          )
+      )
+      WHERE room_id = (
+          SELECT room_id
+          FROM groupsessions
+          WHERE session_id = $1 
+      ); `
+      let values = [groupID, location]
+      performQuery(command, values);
+    } 
   } else if (choice == 3) {
     groupsessionsCreate();
   } else if (choice == 4) {
