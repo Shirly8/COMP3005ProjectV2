@@ -21,12 +21,23 @@
 <br/> trainer.js - trainer functions
 
 # Installation
+To download all the files in the repository, execute the following command in the terminal: 
+```
 git clone https://github.com/Shirly8/COMP3005ProjectV2.git 
+```
 
 # Setup DataBase
-in ./db.js file, getConnection() function
-<br/> change database, user, host, password, port if needed to connect to pgAdmin4
-
+Open .db.js file and look for the getConnection() function and update the following information with your own. 
+```
+database: 'final',
+user: ' ',
+host: 'localhost',
+password: '',
+port: 5432,
+```
 # Running
+To run the program execute the following commands in the terminal:
+```
 npm install 
-<br/> node main.js
+node main.js
+```
