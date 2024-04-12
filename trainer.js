@@ -90,33 +90,39 @@ async function displayTrainerMenu() {
   if (choice == 1) {
     scheduleManagement();
     console.log('');
-
   } else if (choice == 2) {
     membersearching(); 
     console.log('');
   }
 }
 
-// FOR LATER - SHOULD THEY BE ABLE TO LOOK AT THEIR FITNESS STATS?
+// member viewing function where trainer can search for a member based on their first and last name 
 async function membersearching(){
   let fullName = await question("Enter Member's Name: ");
   const flname = fullName.split(" ")
-  const command = 'SELECT * FROM members WHERE first_name = $1 AND last_name = $2';
-  const data = await performQuery(command, flname);
-  try {
-    if (data.rows.length > 0) {
-      data.rows.forEach((item) => {
-        console.log(`\nMemberID: ${item.member_id}`);
-        console.log(`Email: ${item.email}`);
-        console.log(`First Name: ${item.first_name}`);
-        console.log(`Last Name: ${item.last_name}`);
-      });;
-    } else {
-      console.log("Unable to find specified member")
-    }
-} catch (error) { // another error message gets printed, needs to be fixed..? from perform query
-  console.log("Unable to find specified member")
-}
+  const command = 'SELECT member_id FROM members WHERE first_name = $1 AND last_name = $2;'  
+  const id = await performQuery(command, flname);
+  const memberID = id.rows[0].member_id;
+  // checks if the member exists based on name given 
+  if (memberID > 0) {
+    // if exists then prints out all their information except password 
+    let command = 'SELECT * FROM members WHERE member_id = $1';
+    let value = [memberID]; 
+    let data = await performQuery(command, value);
+    data.rows.forEach((item) => {
+      console.log(`\nMemberID: ${item.member_id}`);
+      console.log(`Email: ${item.email}`);
+      console.log(`First Name: ${item.first_name}`);
+      console.log(`Last Name: ${item.last_name}`);
+    });;
+    command = 'SELECT * FROM dashboard WHERE member_id = $1';
+    data = await performQuery(command, value);
+    data.rows.forEach((item) => {
+      console.log(`Exercise Routines: ${item.exercise_routines}`);
+      console.log(`Fitness Goals: ${item.fitness_goals}`);
+      console.log(`Health Metrics: ${item.health_metrics}`);
+    });;
+  } else console.log("Unable to find specified member") // tells trainer that it can't find the member based on their name and goes back to main menu
   displayTrainerMenu();
 }
 

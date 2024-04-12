@@ -8,15 +8,14 @@ const fs = require('fs');
 
 async function startMenu() {
   // Read SQL file to create table and insert data
-  const table = fs.readFileSync('DDL.sql', 'utf8');
+  const table = fs.readFileSync('./SQL/DDL.sql', 'utf8');
   await performQuery(table, '');
 
-  const dataInsert = fs.readFileSync('DML.sql', 'utf8');
+  const dataInsert = fs.readFileSync('./SQL/DML.sql', 'utf8');
   await performQuery(dataInsert, '');
 
   let role = await question('\nMAIN MENU: \n============ \nA - Admin \nM - Member \nT - Trainer \n0 - Exit \nGet started by entering a letter : ');
   let choice = await question('\n \n1. Create Account \n2. Login \n0. Exit \nEnter a number: ', answer => ['1', '2', '0'].includes(answer));
-
 
   role = role.toUpperCase(); 
   if (choice == '1') {
