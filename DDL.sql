@@ -95,13 +95,14 @@ CREATE TABLE groupsessions(
     time_slot_id INT NOT NULL,
     booked_date DATE,
     booked_time TIME,
+    session_type VARCHAR(225) NOT NULL, 
     room_id INT NOT NULL, -- should this be a foreign key to room table or the other way around?
     FOREIGN KEY(trainer_id) REFERENCES trainers,
     FOREIGN KEY(time_slot_id) REFERENCES schedule(time_slot_id)
 );
-ALTER TABLE groupsessions -- makes sure that the groupsessions room_id matches to a room room_id? do we want this? adding a constraint?
-ADD CONSTRAINT fk_room_id
-FOREIGN KEY (room_id) REFERENCES room(room_id);
+-- ALTER TABLE groupsessions -- makes sure that the groupsessions room_id matches to a room room_id? do we want this? adding a constraint?
+-- ADD CONSTRAINT fk_room_id
+-- FOREIGN KEY (room_id) REFERENCES room(room_id);
 
 CREATE TABLE sessionmembers(
     session_id INT,
