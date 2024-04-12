@@ -1,7 +1,6 @@
 const {performQuery } = require('./db.js');
 const {question} = require('./functions.js');
 
-
 async function createAccount(email, password, firstName, lastName) {
     const command = 'INSERT INTO staff (email, password, first_name, last_name) VALUES ($1, $2, $3, $4)';
     const values = [email, password, firstName, lastName];
@@ -43,7 +42,7 @@ async function displayAdminMenu() {
 
   let choice = await question("Enter your choice: ", answer => ['1', '2', '3', '4'].includes(answer));
   if (choice == 1) {
-    // room booking management 
+    roomBookingManagement();
   } else if (choice == 2){
     equipmentMonitoring(); 
   } else if (choice == 3) {
@@ -51,7 +50,20 @@ async function displayAdminMenu() {
   }
   else if (choice == 4) {
     processPayment();
-  }
+  } 
+}
+
+async function roomBookingManagement(){
+  var choice = await question("\n1 - View Room Bookings \n2 - Update Room Bookings \n3 - Create New Room Booking\n4 - Return to Main Menu\nEnter your choice: ");
+  if (choice == 1) {
+    
+  } else if (choice == 2) {
+
+  } else if (choice == 3) {
+
+  } else if (choice == 4) {
+    displayAdminMenu();
+  } roomBookingManagement(); 
 }
 
 async function classScheduleUpdate() {
@@ -78,7 +90,7 @@ async function classScheduleUpdate() {
       console.log(`${session.session_id} \t${session.trainer_name} \t\t${formattedDate} \t${session.booked_time} \t\t${session.session_type} \t${session.room_location}`);   
      });
   } else if (choice == 2) {
-    let answer = await question('1 - Change Time/Date/Trainer \n2 - Change Session Type\n3 - Change Room');
+    let answer = await question('1 - Change Time/Date/Trainer \n2 - Change Session Type\n3 - Change Room\nEnter your choice: ');
     if (answer == 1) groupSessionsUpdateSchedule();
     else if (answer == 2) {
       let groupID = await question('Enter ID# for the group session you want to change: ');
