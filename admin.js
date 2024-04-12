@@ -79,7 +79,6 @@ async function roomBookingManagement(){
 async function classScheduleUpdate() {
   var choice = await question("\n1 - View Class Schedule \n2 - Update Class Schedule \n3 - Create New Class\n4 - Return to Main Menu\nEnter your choice: ");
   if (choice == 1) {
-    // need to do room schedule first and then use this command 
     const command = 
       `SELECT 
       groupsessions.session_id, 
@@ -118,9 +117,13 @@ async function classScheduleUpdate() {
     else if (answer == 2) {
       let groupID = await question('Enter ID# for the group session you want to change: ');
       let sessionType = await question("Enter new group session type: ")
-      const commands = `UPDATE groupsessions SET session_type = $1 WHERE session_id = $2`;
+      const commands = `UPDATE groupsessions SET session_type = $1 WHERE session_id = $2 RETURNING room_id;`;
       const value = [sessionType, groupID];
-      await performQuery(commands, value);
+      const result = await performQuery(commands, value);
+      const roomID = result.rows[0].room_id;
+      const command2 = `UPDATE rooms SET event_type = $1 WHERE room_id = $2`
+      const value2 = [sessionType, roomID];
+      await performQuery(command2, value2);
     } else if (answer == 3) {
       let groupID = await question("Enter ID# for the group session you want to change: ");
       let location = await question("Enter new room # (ie. Format: Room 7): ")
@@ -228,7 +231,7 @@ async function groupsessionsCreate(){
 }
 
 async function equipmentMonitoring() {
-  var choice = await question("\n1 - View All Equipment\n2 - Add Broken Equipment \n3 - Change Status of Equipment\n4 - Return to Main Menu\nEnter your choice: ");
+  var choice = await question("\n1 - View All Equipment\n2 - Add Broken Equipment \n3 - Change Status of Equipment\n4 - to Main Menu\nEnter your choice: ");
   if (choice == 1) { 
     const command = 'SELECT * FROM equipments ORDER BY equipment_id';
     const res = await performQuery(command, '');
