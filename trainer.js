@@ -123,15 +123,7 @@ async function membersearching(){
 
 async function scheduleManagement() {
   let updated = false;
-  console.log("\nSchedule Management");
-  console.log("1 - View Schedule" );
-  console.log("2 - Update Schedule - [Updating on existing will replace]"); 
-  console.log("3 - Delete Schedule [By day]");   
-  console.log("4 - Go back to dashboard");  
-  let choice = await question("Enter your choice or 0 to Exit: ", answer => ['1', '2', '3', '4'].includes(answer));   console.log('');
-
-  if (choice === '1') {
-    const command = `SELECT * FROM schedule WHERE trainer_id = $1 ORDER BY CASE days_free
+  const command = `SELECT * FROM schedule WHERE trainer_id = $1 ORDER BY CASE days_free
           WHEN 'Monday' THEN 1
           WHEN 'Tuesday' THEN 2
           WHEN 'Wednesday' THEN 3
@@ -165,9 +157,14 @@ async function scheduleManagement() {
     } else {
         console.log('NO SCHEDULE');
     }
-    scheduleManagement();
-}
-else if (choice == '2') {
+    
+    console.log("\nSchedule Management");
+    console.log("1 - Update Schedule - [Updating on existing will replace]"); 
+    console.log("2 - Delete Schedule [By day]");   
+    console.log("B - Go back to dashboard");  
+    let choice = await question("Enter your choice or 0 to Exit: ", answer => ['1', '2', '3', '4'].includes(answer));   console.log('');
+  
+  if (choice == '2') {
   let updated = await updateSchedule(savedID, false);
   console.log('');
   if (updated) {
@@ -181,7 +178,7 @@ else if (choice == '2') {
     await performQuery(command, values);
     console.log("Schedule deleted!");
     scheduleManagement();
-  }else if (choice == '4') {displayTrainerMenu()}
+  }else if (choice == 'B') {displayTrainerMenu()}else {scheduleManagement();}
 }
 
 
