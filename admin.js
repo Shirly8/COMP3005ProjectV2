@@ -54,22 +54,44 @@ async function displayAdminMenu() {
 }
 
 async function roomBookingManagement(){
-  var choice = await question("\n1 - View Room Bookings \n2 - Update Room Bookings \n3 - Create New Room Booking\n4 - Return to Main Menu\nEnter your choice: ");
+  var choice = await question("\n1 - View Room Bookings \n2 - Delete Room Booking \n3 - Create New Room Booking\n4 - Return to Main Menu\nEnter your choice: ");
   if (choice == 1) {
     const command = `SELECT * from rooms`
     const res = await performQuery(command, '');
-    console.log('Location \tBooked Date \tBooked Time \tType of Session');
+    console.log('ID#\tLocation \tBooked Date \tBooked Time \tType of Session');
     res.rows.forEach(session => {
       const bookedDate = new Date(session.start_date);
       const month = bookedDate.getMonth() + 1; 
       const day = bookedDate.getDate();
       const year = bookedDate.getFullYear();
       const formattedDate = `${month}/${day}/${year}`;
-      console.log(`${session.room_location} \t\t${formattedDate} \t${session.start_time}\t${session.event_type}`);   
+      console.log(`${session.room_id}\t${session.room_location} \t\t${formattedDate} \t${session.start_time}\t${session.event_type}`);   
      });
   } else if (choice == 2) {
-    
+    let room = await question("Enter room ID you want to delete: ");
+    const command = `SELECT EXISTS (SELECT 1 FROM groupsessions WHERE room_id = $1);`
+    const arr = [room]
+    const result = await performQuery(command, arr);
+    const exists = result.rows[0].exists;
+    if (exists == true) {
+      const deleteGroup = 'DELETE from groupsessions WHERE room_id=$1;'
+      await performQuery(deleteGroup, arr);
+    } 
+    const deleteRoom = 'DELETE from rooms WHERE room_id=$1';
+    await performQuery(deleteRoom, arr);
   } else if (choice == 3) {
+    let answer = await question("1 - Create Room Booking for Group Session\n2 - Create Booking for Other Events\nEnter your choice: ");
+    if (answer == 1) {
+      groupsessionsCreate(); 
+    } else if (answer == 2) {
+      let location = await question("Enter location (ie. Format Room 7): ");
+      let date = await question("Enter date (yyyy-mm-dd): ");
+      let time = await question("Enter time: (hh:mi:ss): ");
+      let type = await question("Enter event type: "); 
+      const createRoom = 'INSERT INTO rooms (room_location, event_type, start_date, start_time) VALUES ($1, $2, $3, $4)'
+      const values = [location, type, date, time];
+      performQuery(createRoom, values);
+    }
 
   } else if (choice == 4) {
     displayAdminMenu();
