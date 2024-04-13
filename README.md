@@ -6,8 +6,8 @@
 
 # Files
 **DIAGRAMS FOLDER**
-<br/> ER_Diagram.png - picture of ER diagram (2.1)
-<br/> Relation_Schemas.png - picture of reduced relation schema (2.2)
+<br/> ER Diagram.png - picture of ER diagram (2.1)
+<br/> Relation Schemas.png - picture of reduced relation schema (2.2)
 
 **SQL FOLDER:**
 <br/> DML.sql - creates table (2.3)
