@@ -5,9 +5,13 @@
 # Demonstration Video
 
 # Files
+**DIAGRAMS FOLDER**
+<br/> ER_Diagram.png - picture of ER diagram (2.1)
+<br/> Relation_Schemas.png - picture of reduced relation schema (2.2)
+
 **SQL FOLDER:**
-<br/> DML.sql - creates table 
-<br/>  DDL.sql - inserts data into table
+<br/> DML.sql - creates table (2.3)
+<br/>  DDL.sql - inserts data into table (2.4) 
 <br/> BookingSessions.sql - to run a query for members to book a personal or group session 
 
 <br/> admin.js - administrative staff functions 
