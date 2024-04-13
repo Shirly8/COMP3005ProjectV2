@@ -23,7 +23,7 @@ async function performQuery(command, values) {
     result = await dbConnect.query(command, values);
 
   } catch (error) {
-    console.error(`\nError: ${error.message}. \n Try again`);
+    // console.error(`\nError: ${error.message}. \n Try again`);
     return;
     } finally {
     await dbConnect.end();
