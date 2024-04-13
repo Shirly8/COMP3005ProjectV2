@@ -79,10 +79,10 @@ CREATE TABLE schedule(
 CREATE TABLE personalsessions(
     session_id SERIAL PRIMARY KEY,
     member_id INT NOT NULL,
-    trainer_id INT NOT NULL,  --Not sure if we incldue this, might be redundant since TIME SLOTS has trainer
+    trainer_id INT NOT NULL, 
     time_slot_id INT NOT NULL,
     booked_date DATE,
-    booked_time TIME,      -- SAME THING WITH THIS: 
+    booked_time TIME,     
     FOREIGN KEY(member_id) REFERENCES members,
     FOREIGN KEY(time_slot_id) REFERENCES schedule(time_slot_id),
     FOREIGN KEY(trainer_id) REFERENCES trainers
@@ -90,7 +90,7 @@ CREATE TABLE personalsessions(
 
 CREATE TABLE groupsessions(
     session_id SERIAL PRIMARY KEY,
-    trainer_id INT NOT NULL,   --See above
+    trainer_id INT NOT NULL,   
     time_slot_id INT NOT NULL,
     booked_date DATE,
     booked_time TIME,
