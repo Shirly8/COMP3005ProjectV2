@@ -23,7 +23,8 @@
 # Installation
 To download all the files in the repository, execute the following command in the terminal: 
 ```
-git clone https://github.com/Shirly8/COMP3005ProjectV2.git 
+git clone https://github.com/Shirly8/COMP3005ProjectV2.git
+cd COMP3005ProjectV2
 ```
 
 # Setup DataBase
