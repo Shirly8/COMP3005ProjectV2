@@ -66,9 +66,9 @@ INSERT INTO dashboard (member_id, exercise_routines, fitness_goals, health_metri
 
 -- FOR ADMINS: 
 INSERT INTO billing (member_id, amount, due_date, paid) VALUES 
-(1, 60, '2024-04-15', false),
-(2, 60, '2024-04-20', false),
-(3, 60, '2024-04-25', true);
+(1, 60, '2024-05-01', false),
+(2, 60, '2024-05-01', false),
+(3, 60, '2024-05-01', true);
 
 --FOR EQUIPMENTS
 INSERT INTO equipments (equipment_name, status, room_location) VALUES

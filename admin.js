@@ -299,7 +299,7 @@ async function equipmentMonitoring() {
 
 // Error: duplicate key value violates unique constraint "billing_pkey". 
 async function seePayment() {
-  //Get all bills that are unpaid
+  //Get all bills that are unpaid where due_date are the following month
   const command = 'SELECT * FROM billing WHERE paid = false';
   const unpaid = await performQuery(command);
   console.log("MemberId\tDue_Date\tAmount\n=========================================");

@@ -8,8 +8,11 @@ async function updateSchedule(trainer_id, newAcc) {
     let schedules = '';
     let scheduleArray = [];
     while (true) {
+      schedules = await question("Enter your available time-slot in 60 min increment (24hr clock): 'Monday = 9:00-11:00, Tuesday = 13:30-19:30' or 'S' to skip\n");
+      if (schedules == 'S') {
+        displayTrainerMenu();
+      }else {
       try {
-        schedules = await question("Enter your available time-slot in 60 min increment (24hr clock): 'Monday = 9:00-11:00, Tuesday = 13:30-19:30'\n");
         scheduleArray = schedules.split(', ');
         for(let i = 0; i < scheduleArray.length; i++) {
           let [day, time] = scheduleArray[i].split(' = ').map(s => s.trim());
@@ -20,6 +23,7 @@ async function updateSchedule(trainer_id, newAcc) {
         console.error(`\nFormat Error: ${error.message}. Please try again! \n`);
       }
     }
+    
 
     for(let i = 0; i < scheduleArray.length; i++) {
       let [day, time] = scheduleArray[i].split(' = ').map(s => s.trim());
@@ -52,7 +56,7 @@ async function updateSchedule(trainer_id, newAcc) {
 
     if (newAcc) { console.log("\nTrainer Added! \n");  displayTrainerMenu(); }else {console.log("Schedule Updated!");return true}
 
-  } catch(error) {
+  } }catch(error) {
     console.error(`\nInput Error: ${error.message}. Please try again! \n`); updateSchedule(trainer_id, newAcc);
   }
 }
@@ -60,10 +64,11 @@ async function updateSchedule(trainer_id, newAcc) {
 
 
 
+
+
 async function login() {
   let email = await question("Enter email: ");
   let password = await question("Enter password: ");
-
   const command = 'SELECT * FROM trainers WHERE email = $1 AND password = $2';
   const values = [email, password];
   const res = await performQuery(command, values);
