@@ -2,7 +2,7 @@
 
 # Demonstration Video
 https://youtu.be/zQA0LMDLN6c 
-<br/>**Disclaimer: When viewing ER diagram and relation schema, please refer to diagrams folder** 
+<br/>**Disclaimer: When viewing the video for ER diagram and relation schema, please refer to diagrams folder instead** 
 # Files
 **DIAGRAMS FOLDER**
 <br/> ER Diagram.png - picture of ER diagram (2.1)
