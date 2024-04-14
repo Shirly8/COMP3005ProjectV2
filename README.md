@@ -17,7 +17,7 @@ https://youtu.be/zQA0LMDLN6c
 <br/>  DDL.sql - inserts data into table (2.4) 
 <br/> BookingSessions.sql - to run a query for members to book a personal or group session 
 
-<br/> admin.js - administrative staff functions 
+admin.js - administrative staff functions 
 <br/> db.js - setup database 
 <br/> function.js - error handling with improper user input
 <br/> main.js - main menu, starts code
