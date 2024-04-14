@@ -108,19 +108,22 @@ async function classScheduleUpdate() {
   if (choice == 1) {
     // outputs class schedule where it shows all its information including the room location from the rooms table as schedule table only stores room_id 
     const command = 
-      `SELECT 
-      groupsessions.session_id, 
-      trainers.first_name || ' ' || trainers.last_name AS trainer_name, 
-      groupsessions.booked_date, 
-      groupsessions.booked_time, 
-      groupsessions.session_type,
-      rooms.room_location
-      FROM 
-        groupsessions
-      JOIN 
-        trainers ON groupsessions.trainer_id = trainers.trainer_id
-      JOIN
-        rooms ON groupsessions.room_id = rooms.room_id;`
+  `SELECT 
+  groupsessions.session_id, 
+  trainers.first_name || ' ' || trainers.last_name AS trainer_name, 
+  groupsessions.booked_date, 
+  schedule.start_time,
+  groupsessions.session_type,
+  rooms.room_location
+  FROM 
+    groupsessions
+  JOIN 
+    trainers ON groupsessions.trainer_id = trainers.trainer_id
+  JOIN
+    schedule ON groupsessions.time_slot_id = schedule.time_slot_id
+  JOIN
+    rooms ON groupsessions.room_id = rooms.room_id;`
+
     const res = await performQuery(command, '');
     console.log('ID#\tTrainer Name\t\t\tBooked Date\tBooked Time\tType of Session\t\tRoom Location');
     res.rows.forEach(session => {
@@ -135,7 +138,7 @@ async function classScheduleUpdate() {
         const paddedSessionId = session.session_id.toString().padEnd(6, ' ');
         const paddedTrainerName = session.trainer_name.padEnd(24, ' ');
         const paddedFormattedDate = formattedDate.padEnd(12, ' ');
-        const paddedBookedTime = session.booked_time.padEnd(14, ' ');
+        const paddedBookedTime = session.start_time.padEnd(14, ' ');
         const paddedSessionType = session.session_type.padEnd(20, ' ');
 
         console.log(`${paddedSessionId}\t${paddedTrainerName}\t${paddedFormattedDate}\t${paddedBookedTime}\t${paddedSessionType}\t${session.room_location}`);  
@@ -206,9 +209,9 @@ async function groupSessionsUpdateSchedule(){
   } 
   // staff can book the trainer's time slot and update it in the group sessions table 
   let number = await question("\nEnter time slots you would like to book?: ");
-  let trainerId = trainers[number]; let startTime = times[number];
-  const commands = `UPDATE groupsessions SET trainer_id = $1, time_slot_id = $2, booked_date = $3, booked_time = $4 WHERE session_id = $5`;
-  const value = [trainerId, number, date, startTime, groupID];
+  let trainerId = trainers[number];
+  const commands = `UPDATE groupsessions SET trainer_id = $1, time_slot_id = $2, booked_date = $3 WHERE session_id = $4`;
+  const value = [trainerId, number, date, groupID];
   sessionadded = await performQuery(commands, value);
   classScheduleUpdate(); 
 }
@@ -257,8 +260,8 @@ async function groupsessionsCreate(){
   let resultRoom = await performQuery(roomCreate, roomValues);
   const roomID = resultRoom.rows[0].room_id;
   // inserts new group session into the group sessions table and using the room_id that was returned from the previous query
-  const commands = `INSERT INTO groupsessions (trainer_id, time_slot_id, booked_date, booked_time, session_type, room_id) VALUES ($1, $2, $3, $4, $5, $6)`;
-  const value = [trainerId, number, date, startTime, typeOfSession, roomID];
+  const commands = `INSERT INTO groupsessions (trainer_id, time_slot_id, booked_date, session_type, room_id) VALUES ($1, $2, $3, $4, $5)`;
+  const value = [trainerId, number, date, typeOfSession, roomID];
   sessionadded = await performQuery(commands, value);
   console.log('');
   classScheduleUpdate();

@@ -175,12 +175,17 @@ async function manageAccount() {
 async function groupSession() {
   const command = `
   SELECT 
-  gs.session_id AS "GroupId", t.first_name || ' ' || t.last_name AS "TrainerName", gs.session_type AS "Type",gs.room_id AS "Room", TO_CHAR(gs.booked_date, 'MM-DD-YY') AS "Date", TO_CHAR(gs.booked_time, 'HH24:MI') AS "Time"
+  gs.session_id AS "GroupId", t.first_name || ' ' || t.last_name AS "TrainerName", gs.session_type AS "Type",gs.room_id AS "Room", TO_CHAR(gs.booked_date, 'MM-DD-YY') AS "Date", TO_CHAR(s.start_time, 'HH24:MI') AS "Time"
 FROM 
   groupsessions gs
-  JOIN trainers t ON gs.trainer_id = t.trainer_id;`;
+  JOIN schedule s ON gs.time_slot_id = s.time_slot_id
+  JOIN trainers t ON gs.trainer_id = t.trainer_id
+  LEFT JOIN sessionmembers sm ON gs.session_id = sm.session_id AND sm.member_id = $1
+  WHERE 
+  sm.session_id IS NULL;`
+  ;
 
-  const result = await performQuery(command);
+  const values = [savedID]; const result = await performQuery(command, values);
     
     if (result.rows.length > 0) {
           console.log('\nID | Trainer Name\tClass\tRoom #\tDate\t\tTime\n=============================================================');
@@ -198,7 +203,7 @@ FROM
   if (insertResult.rowCount > 0) {
     console.log("Successfully booked!\n"); displaySchedule();
   }
- 
+
   }
 
 
@@ -235,11 +240,11 @@ async function personalSession() {
     console.log('No availability. Please enter another date');  personalSession();
   }
   let number = await question("\nEnter time slots you would like to book? ");
-  let trainerId = trainers[number]; let startTime = times[number];
+  let trainerId = trainers[number];
 
     // Insert the new personal session
-  const commands = `INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, booked_time) VALUES ($1, $2, $3, $4, $5)`;
-  const value = [savedID, trainerId, number, date, startTime];
+  const commands = `INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date) VALUES ($1, $2, $3, $4)`;
+  const value = [savedID, trainerId, number, date];
   sessionadded = await performQuery(commands, value);
   console.log('');
 
