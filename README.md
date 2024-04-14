@@ -44,7 +44,12 @@ password: 'your_password',
 port: your_port_number,
 ```
 # Running
-To run the program execute the following commands in the terminal:
+To run the program, make sure you have node js installed:
+```
+node -v
+```
+
+Execute the following commands in the terminal to run the program:
 ```
 npm install 
 node main.js
