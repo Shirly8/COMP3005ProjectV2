@@ -82,7 +82,6 @@ CREATE TABLE personalsessions(
     trainer_id INT NOT NULL, 
     time_slot_id INT NOT NULL,
     booked_date DATE,
-    booked_time TIME,     
     FOREIGN KEY(member_id) REFERENCES members,
     FOREIGN KEY(time_slot_id) REFERENCES schedule(time_slot_id),
     FOREIGN KEY(trainer_id) REFERENCES trainers
@@ -93,17 +92,17 @@ CREATE TABLE groupsessions(
     trainer_id INT NOT NULL,   
     time_slot_id INT NOT NULL,
     booked_date DATE,
-    booked_time TIME,
     session_type VARCHAR(225) NOT NULL, 
     room_id INT NOT NULL, 
     FOREIGN KEY(trainer_id) REFERENCES trainers,
     FOREIGN KEY(time_slot_id) REFERENCES schedule(time_slot_id),
     FOREIGN KEY(room_id) REFERENCES rooms(room_id)
 );
+
+--WEAK ENTITY
 CREATE TABLE sessionmembers(
     session_id INT,
     member_id INT,
-    PRIMARY KEY (session_id, member_id),
     FOREIGN KEY (session_id) REFERENCES groupsessions(session_id),
     FOREIGN KEY (member_id) REFERENCES members(member_id)
 );
