@@ -37,11 +37,11 @@ cd COMP3005ProjectV2
 # Setup DataBase
 Open .db.js file and look for the getConnection() function and update the following information with your own. 
 ```
-database: 'final',
-user: ' ',
-host: 'localhost',
-password: '',
-port: 5432,
+database: 'your_database_name',
+user: 'your_username',
+host: 'your_hostname',
+password: 'your_password',
+port: your_port_number,
 ```
 # Running
 To run the program execute the following commands in the terminal:
