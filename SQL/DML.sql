@@ -77,24 +77,24 @@ INSERT INTO equipments (equipment_name, status, room_location) VALUES
 ('Rowing Machine', true, 'Main Exercise Room');
 
 --PERSONAL SESSIONS;
-INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, booked_time) VALUES 
-(1, 1, 8, '2024-04-11', '14:00:00'), 
-(3, 1, 10, '2024-04-13', '10:00:00'), 
-(1, 1, 12, '2024-04-13', '13:00:00'), 
-(2, 1, 12, '2024-04-20', '13:00:00'), 
-(2, 1, 3, '2024-04-17', '13:00:00');
+INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date) VALUES 
+(1, 1, 8, '2024-04-11'), 
+(3, 1, 10, '2024-04-13'), 
+(1, 1, 12, '2024-04-13'), 
+(2, 1, 12, '2024-04-20'), 
+(2, 1, 3, '2024-04-17');
 
 -- For Michael
-INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, booked_time) VALUES 
-(2, 2, 13, '2024-04-11', '09:00:00'), 
-(1, 2, 22, '2024-04-15', '13:00:00'), 
-(3, 2, 19, '2024-04-13', '14:00:00');
+INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date) VALUES 
+(2, 2, 13, '2024-04-11'), 
+(1, 2, 22, '2024-04-15'), 
+(3, 2, 19, '2024-04-13');
 
 -- For Elvis
-INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date, booked_time) VALUES 
-(1, 3, 27, '2024-04-19', '11:00:00'), 
-(2, 3, 31, '2024-04-13', '17:00:00'), 
-(3, 3, 29, '2024-04-13', '13:00:00');
+INSERT INTO personalsessions (member_id, trainer_id, time_slot_id, booked_date) VALUES 
+(1, 3, 27, '2024-04-19'), 
+(2, 3, 31, '2024-04-13'), 
+(3, 3, 29, '2024-04-13');
 
 -- ROOM BOOKINGS 
 INSERT INTO rooms (room_location, event_type, start_date, start_time)
@@ -111,15 +111,15 @@ VALUES
     ('Room 8', 'Boxing', '2024-04-13', '14:00:00');
 
 -- FOR GROUP SESSIONS 
-INSERT INTO groupsessions (trainer_id, time_slot_id, booked_date, booked_time, session_type, room_id)
+INSERT INTO groupsessions (trainer_id, time_slot_id, booked_date, session_type, room_id)
  VALUES 
-    (1, 8, '2024-04-19', '14:00:00', 'Yoga', 4), 
-    (1, 11, '2024-04-13', '11:00:00', 'Pilates', 5),
-    (1, 11, '2024-04-20', '11:00:00', 'Pilates', 6),
-    (3, 28, '2024-04-19', '11:00:00', 'HIIT', 7),
-    (2, 17, '2024-04-13', '15:00:00', 'HIIT', 8),
-    (3, 31, '2024-04-20', '14:00:00', 'Boxing', 9),
-    (3, 30, '2024-04-13', '14:00:00', 'Boxing', 10);
+    (1, 8, '2024-04-19', 'Yoga', 4), 
+    (1, 11, '2024-04-13', 'Pilates', 5),
+    (1, 11, '2024-04-20', 'Pilates', 6),
+    (3, 28, '2024-04-19', 'HIIT', 7),
+    (2, 17, '2024-04-13', 'HIIT', 8),
+    (3, 31, '2024-04-20', 'Boxing', 9),
+    (3, 30, '2024-04-13','Boxing', 10);
 
 -- FOR SESSION MEMBERS
 INSERT INTO sessionmembers (session_id, member_id)
