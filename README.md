@@ -1,7 +1,8 @@
 # 3005 FINAL PROJECT V2- Shirley Huang (101185496) AND Helen Zhu (101260141)
 
 # Demonstration Video
-https://youtu.be/zQA0LMDLN6c
+https://youtu.be/zQA0LMDLN6c 
+**Disclaimer: When viewing ER diagram and relation schema, please refer to diagrams folder** 
 # Files
 **DIAGRAMS FOLDER**
 <br/> ER Diagram.png - picture of ER diagram (2.1)
